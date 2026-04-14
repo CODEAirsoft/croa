@@ -1,0 +1,362 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleType {
+  admin
+  fundador
+  operador
+  comando
+  ranger
+  arbitro
+  gestor
+  promoter
+  reporter
+  presidente
+  professor
+  instrutor
+  outros
+}
+
+enum MemberClass {
+  STANDARD
+  PREMIUM
+  TOP_TEAM
+  MASTER
+  ALMIGHTY
+}
+
+enum BloodType {
+  A_POSITIVO
+  A_NEGATIVO
+  B_POSITIVO
+  B_NEGATIVO
+  AB_POSITIVO
+  AB_NEGATIVO
+  O_POSITIVO
+  O_NEGATIVO
+}
+
+enum MemberLevel {
+  ALPHA_0
+  N1
+  N2
+  N3
+  N4
+  N5
+}
+
+enum MemberStatus {
+  ativo
+  suspenso
+  inativo
+  excluido
+  rip
+}
+
+enum EventType {
+  aberto
+  fechado
+  chancelado
+  homologado
+}
+
+enum AttendanceStatus {
+  confirmado
+  presente
+  ausente
+  justificado
+}
+
+enum SquadOperationalClass {
+  BASE
+  INTERMEDIARIO
+  AVANCADO
+  AUTO_RENDIMENTO
+}
+
+enum SquadAssignmentType {
+  TITULAR
+  RESERVA
+  COMANDO
+}
+
+enum SquadPosition {
+  PONTA
+  APOIO
+  SUPORTE
+  LIDER
+  RETAGUARDA
+  COMANDO
+}
+
+enum SquadSpecialization {
+  ASSALT
+  SUPRESSOR
+  SNIPER
+  DMR
+  SPOTTER
+  RADIO
+  MEDICO
+  ENGENHEIRO
+}
+
+model User {
+  id           String   @id @default(cuid())
+  fullName     String
+  email        String   @unique
+  passwordHash String?
+  role         RoleType
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  member       Member?
+}
+
+model Field {
+  id                String        @id @default(cuid())
+  codeNumber        Int           @unique @default(autoincrement())
+  countryCode       String        @default("BR")
+  name              String
+  cnpj              String?       @unique
+  fullAddress       String?
+  ownerName         String?
+  contactPhone      String?
+  website           String?
+  instagram         String?
+  facebook          String?
+  city              String?
+  state             String
+  capacity          Int?
+  active            Boolean       @default(true)
+  photoDataUrl      String?
+  photoScale        Int           @default(100)
+  photoPositionX    Int           @default(50)
+  photoPositionY    Int           @default(50)
+  operatorId        String?
+  refereeId         String?
+  firstRangerId     String?
+  secondRangerId    String?
+  registrationDate  DateTime?
+  contractValidUntil DateTime?
+  operator          Member?       @relation("FieldOperator", fields: [operatorId], references: [id])
+  referee           Member?       @relation("FieldReferee", fields: [refereeId], references: [id])
+  firstRanger       Member?       @relation("FieldFirstRanger", fields: [firstRangerId], references: [id])
+  secondRanger      Member?       @relation("FieldSecondRanger", fields: [secondRangerId], references: [id])
+  members           Member[]      @relation("PracticeField")
+  squads            Squad[]
+  events            EventRecord[]
+  courses           CourseRecord[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model Squad {
+  id               String                @id @default(cuid())
+  name             String                @unique
+  operationalClass SquadOperationalClass @default(BASE)
+  fieldId          String?
+  rankingPoints    Int                   @default(0)
+  active           Boolean               @default(true)
+  enrollmentDate   DateTime?
+  status           MemberStatus          @default(ativo)
+  leaderId         String?               @unique
+  photoDataUrl     String?
+  photoScale       Int                   @default(100)
+  photoPositionX   Int                   @default(50)
+  photoPositionY   Int                   @default(50)
+  leader           Member?               @relation("SquadLeader", fields: [leaderId], references: [id])
+  field            Field?                @relation(fields: [fieldId], references: [id])
+  members          Member[]
+  assignments      SquadMemberAssignment[]
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+}
+
+model Member {
+  id                    String             @id @default(cuid())
+  croaNumber            Int                @unique @default(autoincrement())
+  userId                String?            @unique
+  codiname              String
+  fullName              String
+  birthDate             DateTime?
+  enrollmentDate        DateTime?
+  photoDataUrl          String?
+  photoScale            Int                @default(100)
+  photoPositionX        Int                @default(50)
+  photoPositionY        Int                @default(50)
+  crestLeftDataUrl      String?
+  crestRightDataUrl     String?
+  accessLogin           String?
+  accessPasswordHash    String?
+  email                 String?
+  ddi                   String?
+  ddd                   String?
+  phoneNumber           String?
+  rg                    String?            @unique
+  role                  RoleType
+  otherRole             String?
+  level                 MemberLevel        @default(ALPHA_0)
+  memberClass           MemberClass        @default(STANDARD)
+  points                Int                @default(0)
+  attendanceRate        Int                @default(0)
+  cooldownDaysRemaining Int                @default(0)
+  status                MemberStatus       @default(ativo)
+  addressStreet         String?
+  addressNumber         String?
+  neighborhood          String?
+  postalCode            String?
+  addressComplement     String?
+  bloodType             BloodType?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  observations          String?            @db.VarChar(500)
+  user                  User?              @relation(fields: [userId], references: [id])
+  fieldId               String?
+  field                 Field?             @relation("PracticeField", fields: [fieldId], references: [id])
+  squadId               String?
+  squad                 Squad?             @relation(fields: [squadId], references: [id])
+  ledSquad              Squad?             @relation("SquadLeader")
+  operatingFields       Field[]            @relation("FieldOperator")
+  refereedFields        Field[]            @relation("FieldReferee")
+  firstRangerFields     Field[]            @relation("FieldFirstRanger")
+  secondRangerFields    Field[]            @relation("FieldSecondRanger")
+  squadAssignments      SquadMemberAssignment[]
+  attendances           AttendanceRecord[]
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  @@unique([ddi, ddd, phoneNumber])
+}
+
+model SquadMemberAssignment {
+  id              String                @id @default(cuid())
+  squadId         String
+  memberId        String
+  slotType        SquadAssignmentType
+  position        SquadPosition
+  specializations SquadSpecialization[]
+  sortOrder       Int                   @default(0)
+  squad           Squad                 @relation(fields: [squadId], references: [id], onDelete: Cascade)
+  member          Member                @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  @@unique([squadId, memberId])
+}
+
+model EventRecord {
+  id                   String             @id @default(cuid())
+  title                String
+  type                 EventType
+  category             String?
+  summary              String?
+  description          String?
+  organizerName        String?
+  city                 String?
+  state                String?
+  startAt              DateTime
+  endAt                DateTime?
+  registrationDeadline DateTime?
+  recurringEnabled     Boolean            @default(false)
+  recurrenceFrequency  String?
+  maxParticipants      Int
+  reservedSlots        Int                @default(0)
+  priceLabel           String?
+  equipmentRentalLabel String?
+  discountPercent      Int                @default(0)
+  reservationLabel     String?            @default("Reservar vaga")
+  whatsappMessage      String?
+  photoDataUrl         String?
+  photoScale           Int                @default(100)
+  photoPositionX       Int                @default(50)
+  photoPositionY       Int                @default(50)
+  status               String             @default("planejado")
+  fieldId              String?
+  field                Field?             @relation(fields: [fieldId], references: [id])
+  attendances          AttendanceRecord[]
+  newsPosts            NewsPost[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+}
+
+model CourseRecord {
+  id                   String   @id @default(cuid())
+  title                String
+  category             String
+  summary              String?
+  description          String?
+  instructorName       String?
+  workloadLabel        String?
+  targetLevel          String?
+  targetClass          String?
+  city                 String?
+  state                String?
+  startAt              DateTime
+  endAt                DateTime?
+  registrationDeadline DateTime?
+  totalSeats           Int      @default(0)
+  reservedSlots        Int      @default(0)
+  priceLabel           String?
+  reservationLabel     String?  @default("Reservar vaga")
+  whatsappMessage      String?
+  photoDataUrl         String?
+  photoScale           Int      @default(100)
+  photoPositionX       Int      @default(50)
+  photoPositionY       Int      @default(50)
+  active               Boolean  @default(true)
+  fieldId              String?
+  field                Field?   @relation(fields: [fieldId], references: [id])
+  newsPosts            NewsPost[]
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model NewsPost {
+  id             String        @id @default(cuid())
+  title          String
+  excerpt        String?
+  body           String?
+  imageDataUrl   String?
+  imageScale     Int           @default(100)
+  imagePositionX Int           @default(50)
+  imagePositionY Int           @default(50)
+  videoUrl       String?
+  externalLink   String?
+  eventId        String?
+  courseId       String?
+  published      Boolean       @default(true)
+  sortOrder      Int           @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  event          EventRecord?  @relation(fields: [eventId], references: [id])
+  course         CourseRecord? @relation(fields: [courseId], references: [id])
+}
+
+model AttendanceRecord {
+  id          String           @id @default(cuid())
+  eventId     String
+  memberId    String
+  status      AttendanceStatus
+  scoreEarned Int              @default(0)
+  checkedInAt DateTime?
+  event       EventRecord      @relation(fields: [eventId], references: [id])
+  member      Member           @relation(fields: [memberId], references: [id])
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model PromotionRule {
+  id                    String      @id @default(cuid())
+  fromLevel             MemberLevel
+  toLevel               MemberLevel
+  minimumPoints         Int
+  minimumAttendanceRate Int
+  minimumCooldownDays   Int
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}

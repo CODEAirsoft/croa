@@ -1,0 +1,23 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="720" rx="36" fill="#0D0F10"/>
+  <rect x="36" y="36" width="1128" height="648" rx="28" fill="url(#paint0_linear)"/>
+  <circle cx="314" cy="398" r="74" fill="#F3E4C3" fill-opacity="0.14"/>
+  <circle cx="514" cy="398" r="74" fill="#F3E4C3" fill-opacity="0.14"/>
+  <circle cx="714" cy="398" r="74" fill="#F3E4C3" fill-opacity="0.14"/>
+  <path d="M250 502C250 463.34 281.34 432 320 432H344C382.66 432 414 463.34 414 502V538H250V502Z" fill="#F3E4C3" fill-opacity="0.12"/>
+  <path d="M450 502C450 463.34 481.34 432 520 432H544C582.66 432 614 463.34 614 502V538H450V502Z" fill="#F3E4C3" fill-opacity="0.12"/>
+  <path d="M650 502C650 463.34 681.34 432 720 432H744C782.66 432 814 463.34 814 502V538H650V502Z" fill="#F3E4C3" fill-opacity="0.12"/>
+  <path d="M850 202H1088" stroke="#F2F2F2" stroke-opacity="0.18" stroke-width="22" stroke-linecap="round"/>
+  <path d="M850 260H1110" stroke="#F2F2F2" stroke-opacity="0.12" stroke-width="22" stroke-linecap="round"/>
+  <path d="M850 318H1002" stroke="#D4B16A" stroke-opacity="0.34" stroke-width="22" stroke-linecap="round"/>
+  <rect x="850" y="408" width="232" height="64" rx="32" fill="#F3E4C3"/>
+  <text x="92" y="118" fill="#F7F0E2" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="7">EQUIPES</text>
+  <text x="92" y="186" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="84" font-weight="700">Cadastro de Squads</text>
+  <text x="96" y="606" fill="#D7D7D7" font-family="Arial, Helvetica, sans-serif" font-size="30">Lideranças, identidade tática e base de ranking competitivo</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="80" y1="72" x2="1120" y2="660" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#171A1C"/>
+      <stop offset="1" stop-color="#0A0B0C"/>
+    </linearGradient>
+  </defs>
+</svg>

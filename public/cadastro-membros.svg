@@ -1,0 +1,23 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="720" rx="36" fill="#0D0F10"/>
+  <rect x="36" y="36" width="1128" height="648" rx="28" fill="url(#paint0_linear)"/>
+  <circle cx="940" cy="168" r="126" fill="#D4B16A" fill-opacity="0.16"/>
+  <circle cx="940" cy="168" r="94" fill="#D4B16A" fill-opacity="0.18"/>
+  <path d="M277 426C277 346.471 341.471 282 421 282H515C594.529 282 659 346.471 659 426V465H277V426Z" fill="#D9D9D9" fill-opacity="0.12"/>
+  <circle cx="468" cy="236" r="86" fill="#F3E4C3" fill-opacity="0.16"/>
+  <path d="M190 528H728" stroke="#F3E4C3" stroke-opacity="0.28" stroke-width="4" stroke-linecap="round"/>
+  <path d="M772 238H1012" stroke="#F2F2F2" stroke-opacity="0.18" stroke-width="22" stroke-linecap="round"/>
+  <path d="M772 296H1072" stroke="#F2F2F2" stroke-opacity="0.12" stroke-width="22" stroke-linecap="round"/>
+  <path d="M772 354H960" stroke="#D4B16A" stroke-opacity="0.3" stroke-width="22" stroke-linecap="round"/>
+  <rect x="772" y="434" width="198" height="64" rx="32" fill="#F3E4C3"/>
+  <rect x="990" y="434" width="128" height="64" rx="32" fill="#121416" stroke="#F3E4C3" stroke-opacity="0.36" stroke-width="2"/>
+  <text x="92" y="118" fill="#F7F0E2" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="7">BASE HUMANA</text>
+  <text x="92" y="186" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="84" font-weight="700">Cadastro de Membros</text>
+  <text x="96" y="560" fill="#D7D7D7" font-family="Arial, Helvetica, sans-serif" font-size="30">Operadores, gestores, comandos, árbitros e rangers</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="80" y1="72" x2="1120" y2="660" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#171A1C"/>
+      <stop offset="1" stop-color="#0A0B0C"/>
+    </linearGradient>
+  </defs>
+</svg>

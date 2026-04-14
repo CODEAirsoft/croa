@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">Silhueta de operador</title>
+  <desc id="desc">Silhueta padrão de busto de um soldado para cadastro de operador.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#1b1b1b" />
+      <stop offset="100%" stop-color="#111111" />
+    </linearGradient>
+  </defs>
+  <rect width="240" height="240" rx="120" fill="url(#bg)" />
+  <circle cx="120" cy="92" r="34" fill="#d8d8d8" opacity="0.9" />
+  <path
+    d="M60 192c8-35 30-55 60-55s52 20 60 55"
+    fill="#d8d8d8"
+    opacity="0.9"
+  />
+  <path
+    d="M83 72l18-18h38l18 18-8 14H91z"
+    fill="#a88b3f"
+    opacity="0.95"
+  />
+</svg>

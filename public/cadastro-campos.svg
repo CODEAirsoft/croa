@@ -1,0 +1,22 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="720" rx="36" fill="#0D0F10"/>
+  <rect x="36" y="36" width="1128" height="648" rx="28" fill="url(#paint0_linear)"/>
+  <path d="M88 564C164 504 262 490 354 520C420 542 492 550 564 542C650 532 730 486 824 486C928 486 1018 548 1110 606V684H88V564Z" fill="#4A5C3D"/>
+  <path d="M88 612C180 560 266 548 348 576C436 606 530 614 620 600C724 584 822 526 914 526C990 526 1054 560 1110 606V684H88V612Z" fill="#2F382B"/>
+  <path d="M230 420H472L564 516H322L230 420Z" fill="#E4D0A2" fill-opacity="0.16"/>
+  <path d="M334 238H368V516H334V238Z" fill="#E4D0A2" fill-opacity="0.28"/>
+  <path d="M216 278H486V320H216V278Z" fill="#E4D0A2" fill-opacity="0.28"/>
+  <path d="M786 196H1038" stroke="#F2F2F2" stroke-opacity="0.18" stroke-width="22" stroke-linecap="round"/>
+  <path d="M786 256H1094" stroke="#F2F2F2" stroke-opacity="0.12" stroke-width="22" stroke-linecap="round"/>
+  <path d="M786 316H972" stroke="#D4B16A" stroke-opacity="0.34" stroke-width="22" stroke-linecap="round"/>
+  <rect x="786" y="414" width="212" height="64" rx="32" fill="#F3E4C3"/>
+  <text x="92" y="118" fill="#F7F0E2" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" letter-spacing="7">INFRAESTRUTURA</text>
+  <text x="92" y="186" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="84" font-weight="700">Cadastro de Campos</text>
+  <text x="96" y="558" fill="#D7D7D7" font-family="Arial, Helvetica, sans-serif" font-size="30">Identificação CODE, capacidade operacional e operador responsável</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="80" y1="72" x2="1120" y2="660" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#171A1C"/>
+      <stop offset="1" stop-color="#0A0B0C"/>
+    </linearGradient>
+  </defs>
+</svg>
