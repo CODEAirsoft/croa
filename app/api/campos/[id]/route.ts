@@ -8,6 +8,9 @@ import {
 } from "@/lib/field-validation";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 type Params = {
   params: Promise<{
     id: string;
