@@ -338,8 +338,8 @@ export function MemberCroaRecord({
   }
 
   return (
-    <form className="quick-form croa-record-card" onSubmit={handleSubmit}>
-      <div className="croa-record-wallet">
+    <form className={`quick-form croa-record-card${isPublicView ? " croa-record-card-public" : ""}`} onSubmit={handleSubmit}>
+      <div className={`croa-record-wallet${isPublicView ? " croa-record-wallet-public" : ""}`}>
         <div className="croa-record-wallet-left">
           <div className="croa-record-photo">
             <Image
@@ -360,13 +360,15 @@ export function MemberCroaRecord({
         </div>
 
         <div className="croa-record-wallet-center">
-          <div className="croa-record-header-line">
-            <Image alt="Logotipo CODE Airsoft" height={58} priority src="/code-airsoft-logo.jpg" width={58} />
-            <div className="croa-record-header-copy">
-              <span className="croa-record-header-overline">CODE Airsoft</span>
-              <strong className="croa-record-header-title">Carteira oficial do operador</strong>
+          {isEditing ? (
+            <div className="croa-record-header-line">
+              <Image alt="Logotipo CODE Airsoft" height={58} priority src="/code-airsoft-logo.jpg" width={58} />
+              <div className="croa-record-header-copy">
+                <span className="croa-record-header-overline">CODE Airsoft</span>
+                <strong className="croa-record-header-title">Carteira oficial do operador</strong>
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <strong className="croa-record-codiname">{currentMember.codiname || "Sem codinome"}</strong>
           <div className="croa-record-number">{formatCroaCode(currentMember.croaNumber)}</div>

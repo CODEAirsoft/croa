@@ -3220,10 +3220,167 @@ body {
 
   .croa-record-grid-public .field input,
   .croa-record-grid-public .field select {
-    min-height: 44px;
-    padding: 0 12px;
-    font-size: 0.92rem;
-    border-radius: 12px;
+      min-height: 44px;
+      padding: 0 12px;
+      font-size: 0.92rem;
+      border-radius: 12px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .nav-drawer-backdrop {
+    background: rgba(8, 12, 10, 0.58);
+  }
+
+  .nav-drawer {
+    width: min(84vw, 340px);
+    padding: 22px 18px 24px;
+    overflow-y: auto;
+    border-right: 1px solid rgba(232, 211, 139, 0.18);
+    background:
+      linear-gradient(180deg, rgba(10, 16, 13, 0.98) 0%, rgba(18, 27, 22, 0.96) 100%),
+      var(--card-gradient);
+    box-shadow: 24px 0 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .nav-drawer-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding-bottom: 10px;
+    background: linear-gradient(180deg, rgba(10, 16, 13, 0.98) 0%, rgba(10, 16, 13, 0.92) 100%);
+  }
+
+  .nav-drawer-header strong,
+  .nav-drawer-close {
+    color: #f4ead0;
+  }
+
+  .nav-drawer-links {
+    padding-top: 14px;
+    padding-bottom: 32px;
+  }
+
+  .nav-drawer-link,
+  .nav-drawer-links .admin-exit-button {
+    border-color: rgba(232, 211, 139, 0.16);
+    background: rgba(255, 255, 255, 0.05);
+    color: #f8f1dd;
+  }
+
+  .nav-drawer-link:hover,
+  .nav-drawer-links .admin-exit-button:hover {
+    background: rgba(232, 211, 139, 0.14);
+    color: #ffffff;
+  }
+
+  .croa-record-card-public {
+    padding: 14px;
+    border-radius: 26px;
+  }
+
+  .croa-record-wallet-public {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 18px 14px 16px;
+    border: 1px solid rgba(232, 211, 139, 0.2);
+    background:
+      linear-gradient(180deg, rgba(8, 13, 18, 0.98) 0%, rgba(15, 23, 29, 0.96) 100%);
+  }
+
+  .croa-record-wallet-public .croa-record-wallet-left,
+  .croa-record-wallet-public .croa-record-wallet-center,
+  .croa-record-wallet-public .croa-record-wallet-right {
+    gap: 8px;
+  }
+
+  .croa-record-wallet-public .croa-record-photo {
+    width: 148px;
+    height: 148px;
+    border: 2px solid rgba(232, 211, 139, 0.5);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+  }
+
+  .croa-record-wallet-public .croa-record-brand {
+    font-size: 1.18rem;
+    letter-spacing: 0.34em;
+    color: #f2ce63;
+  }
+
+  .croa-record-wallet-public .croa-record-codiname {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    letter-spacing: 0.03em;
+    color: #fff7de;
+  }
+
+  .croa-record-wallet-public .croa-record-number {
+    min-height: 48px;
+    padding: 0 4px;
+    color: #ffd34f;
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
+    font-weight: 800;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .croa-record-wallet-public .croa-record-status-pill {
+    width: min(220px, 100%);
+    min-width: 0;
+    min-height: 48px;
+    margin: 4px auto 0;
+    font-size: 0.98rem;
+    font-weight: 800;
+    justify-self: center;
+  }
+
+  .croa-record-wallet-public .croa-record-wallet-right {
+    grid-template-columns: repeat(2, max-content);
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .croa-record-wallet-public .croa-record-crest-slot {
+    width: 82px;
+    height: 82px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .croa-record-wallet-public .croa-record-crest-image {
+    padding: 0;
+  }
+
+  .croa-record-wallet-public .croa-record-crest-placeholder {
+    font-size: 0.72rem;
+  }
+
+  .croa-record-grid-public {
+    gap: 10px;
+  }
+
+  .croa-record-grid-public .field {
+    padding: 10px 12px;
+    border-radius: 14px;
+    border-color: rgba(232, 211, 139, 0.14);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .croa-record-grid-public .field span {
+    font-size: 0.74rem;
+  }
+
+  .croa-record-grid-public .field input,
+  .croa-record-grid-public .field select {
+    min-height: 40px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #f9f3e5;
+    font-size: 1rem;
+    font-weight: 700;
   }
 }
 
