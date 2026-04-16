@@ -2913,47 +2913,52 @@ body {
 
   .brand-header {
     position: relative;
-    min-height: 108px;
-    gap: 10px;
-    align-items: stretch;
-    justify-items: center;
+    min-height: 96px;
+    display: grid;
+    grid-template-columns: 68px minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: start;
     padding-left: 0;
-    padding-top: 6px;
+    padding-top: 4px;
+    margin-bottom: 8px;
   }
 
   .brand-logo {
     position: absolute;
     top: 0;
     left: 0;
-    width: 68px;
-    height: 68px;
+    width: 64px;
+    height: 64px;
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.26);
   }
 
   .brand-copy {
+    grid-column: 2;
     width: 100%;
-    padding: 4px 6px 0;
-    text-align: center;
-    justify-items: center;
+    padding: 2px 2px 0 0;
+    text-align: left;
+    justify-items: start;
+    align-content: start;
+    gap: 2px;
   }
 
   .brand-kicker {
-    font-size: 0.76rem;
-    letter-spacing: 0.18em;
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
   }
 
   .brand-title {
-    font-size: 0.88rem;
-    line-height: 1.22;
+    font-size: 0.84rem;
+    line-height: 1.12;
     white-space: normal;
-    max-width: 28ch;
+    max-width: 20ch;
   }
 
   .topbar-title {
-    margin-top: 4px;
-    text-align: center;
-    font-size: clamp(1.45rem, 6vw, 2.3rem);
-    line-height: 1.08;
+    margin-top: 2px;
+    text-align: left;
+    font-size: clamp(1.28rem, 5.6vw, 2rem);
+    line-height: 1.02;
   }
 
   .nav-tabs-desktop {
@@ -2962,13 +2967,13 @@ body {
 
   .nav-drawer-toggle {
     position: absolute;
-    top: 82px;
-    left: 16px;
+    top: 68px;
+    left: 24px;
     z-index: 30;
     display: inline-grid;
     gap: 5px;
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
     padding: 10px;
     border: 1px solid rgba(232, 211, 139, 0.16);
     border-radius: 14px;
