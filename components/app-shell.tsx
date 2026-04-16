@@ -1,7 +1,7 @@
 ﻿import Image from "next/image";
 import { cookies } from "next/headers";
 import { ReactNode } from "react";
-import { AppShellNavigation } from "@/components/app-shell-navigation";
+import { AppShellNavigationPortal } from "@/components/app-shell-navigation-portal";
 import { hasAdministrativeSession } from "@/lib/admin-session";
 
 const navigationItems = [
@@ -49,7 +49,7 @@ export async function AppShell({
             <h1 className="topbar-title">{title}</h1>
           </div>
         </div>
-        <AppShellNavigation hasAdministrativeAccess={hasAdministrativeAccess} items={items} />
+        <AppShellNavigationPortal hasAdministrativeAccess={hasAdministrativeAccess} items={items} />
       </header>
       {children}
     </div>

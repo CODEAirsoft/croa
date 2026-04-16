@@ -10,7 +10,7 @@ type NavigationItem = {
   label: string;
 };
 
-export function AppShellNavigation({
+export function AppShellNavigationPortal({
   items,
   hasAdministrativeAccess,
 }: {
@@ -70,31 +70,43 @@ export function AppShellNavigation({
         {hasAdministrativeAccess ? <AdminModeExitButton /> : null}
       </nav>
 
-      <button
-        aria-hidden={!isOpen}
-        className={`nav-drawer-backdrop${isOpen ? " is-open" : ""}`}
-        onClick={() => setIsOpen(false)}
-        tabIndex={isOpen ? 0 : -1}
-        type="button"
-      />
+      {isMounted
+        ? createPortal(
+            <>
+              <button
+                aria-hidden={!isOpen}
+                className={`nav-drawer-backdrop${isOpen ? " is-open" : ""}`}
+                onClick={() => setIsOpen(false)}
+                tabIndex={isOpen ? 0 : -1}
+                type="button"
+              />
 
-      <aside className={`nav-drawer${isOpen ? " is-open" : ""}`} id="app-shell-drawer">
-        <div className="nav-drawer-header">
-          <strong>Menu CROA</strong>
-          <button aria-label="Fechar menu" className="nav-drawer-close" onClick={() => setIsOpen(false)} type="button">
-            ×
-          </button>
-        </div>
+              <aside className={`nav-drawer${isOpen ? " is-open" : ""}`} id="app-shell-drawer">
+                <div className="nav-drawer-header">
+                  <strong>Menu CROA</strong>
+                  <button
+                    aria-label="Fechar menu"
+                    className="nav-drawer-close"
+                    onClick={() => setIsOpen(false)}
+                    type="button"
+                  >
+                    ×
+                  </button>
+                </div>
 
-        <div className="nav-drawer-links">
-          {items.map((item) => (
-            <Link className="nav-drawer-link" href={item.href} key={item.href} onClick={() => setIsOpen(false)}>
-              {item.label}
-            </Link>
-          ))}
-          {hasAdministrativeAccess ? <AdminModeExitButton /> : null}
-        </div>
-      </aside>
+                <div className="nav-drawer-links">
+                  {items.map((item) => (
+                    <Link className="nav-drawer-link" href={item.href} key={item.href} onClick={() => setIsOpen(false)}>
+                      {item.label}
+                    </Link>
+                  ))}
+                  {hasAdministrativeAccess ? <AdminModeExitButton /> : null}
+                </div>
+              </aside>
+            </>,
+            document.body,
+          )
+        : null}
     </>
   );
 }
