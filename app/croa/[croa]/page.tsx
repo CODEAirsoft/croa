@@ -40,6 +40,18 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
             name: true,
           },
         },
+        squad: {
+          select: {
+            id: true,
+            name: true,
+            photoDataUrl: true,
+            field: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
     }),
     prisma.field.findMany({
@@ -88,6 +100,9 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
     memberClass: member.memberClass,
     status: member.status,
     fieldId: member.fieldId ?? "",
+    squadName: member.squad?.name ?? "",
+    squadFieldName: member.squad?.field?.name ?? "",
+    squadPhotoDataUrl: member.squad?.photoDataUrl ?? "",
     addressStreet: member.addressStreet ?? "",
     addressNumber: member.addressNumber ?? "",
     neighborhood: member.neighborhood ?? "",

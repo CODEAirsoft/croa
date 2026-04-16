@@ -2516,10 +2516,10 @@ body {
 .news-menu-list {
   display: grid;
   gap: 10px;
-  max-height: 350px;
-  min-height: 350px;
-  overflow-y: auto;
-  padding-right: 6px;
+  max-height: none;
+  min-height: 0;
+  overflow: visible;
+  padding-right: 0;
 }
 
 .hero-panel-only {
@@ -2909,12 +2909,13 @@ body {
     z-index: 30;
     display: inline-grid;
     gap: 5px;
-    width: 38px;
-    height: 38px;
-    padding: 8px;
-    border: 1px solid rgba(24, 33, 29, 0.12);
-    border-radius: 12px;
-    background: rgba(255, 250, 240, 0.88);
+    width: 46px;
+    height: 46px;
+    padding: 10px;
+    border: 1px solid rgba(232, 211, 139, 0.16);
+    border-radius: 14px;
+    background: rgba(10, 16, 13, 0.92);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.24);
     cursor: pointer;
   }
 
@@ -2946,10 +2947,10 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    bottom: 0;
+    min-height: 100vh;
     z-index: 110;
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto;
     width: min(84vw, 320px);
     padding: 18px 16px 20px;
     background:
@@ -3121,9 +3122,10 @@ body {
   }
 
   .news-menu-list {
-    max-height: 320px;
-    min-height: 320px;
-  }
+      max-height: none;
+      min-height: 0;
+      overflow: visible;
+    }
 
   .news-menu-item {
     grid-template-columns: 50px minmax(0, 1fr);
@@ -3235,7 +3237,7 @@ body {
   .nav-drawer {
     width: min(84vw, 340px);
     padding: 22px 18px 24px;
-    overflow-y: auto;
+    overflow: visible;
     border-right: 1px solid rgba(232, 211, 139, 0.18);
     background:
       linear-gradient(180deg, rgba(10, 16, 13, 0.98) 0%, rgba(18, 27, 22, 0.96) 100%),
@@ -3258,7 +3260,7 @@ body {
 
   .nav-drawer-links {
     padding-top: 14px;
-    padding-bottom: 32px;
+    padding-bottom: 12px;
   }
 
   .nav-drawer-link,
@@ -3396,5 +3398,149 @@ body {
 
   .news-menu-card {
     order: 2;
+  }
+}
+
+.croa-record-photo-stack {
+  position: relative;
+  display: inline-flex;
+}
+
+.croa-record-squad-photo {
+  position: absolute;
+  right: -18px;
+  bottom: 12px;
+  width: 50%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 2px solid rgba(232, 211, 139, 0.42);
+  background: rgba(12, 18, 16, 0.92);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+  z-index: 2;
+}
+
+.croa-record-squad-photo-image {
+  object-fit: cover;
+}
+
+.croa-readonly-field input {
+  cursor: default;
+}
+
+.croa-public-extra {
+  display: grid;
+  gap: 16px;
+}
+
+.croa-emergency-toggle {
+  width: min(100%, 340px);
+  min-height: 58px;
+  margin: 0 auto;
+  border: 1px solid rgba(255, 199, 79, 0.48);
+  background: linear-gradient(180deg, #b10a0a 0%, #7d0303 100%);
+  color: #ffd34f;
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 14px 28px rgba(110, 0, 0, 0.28);
+}
+
+.croa-emergency-panel,
+.croa-observations-panel {
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(232, 211, 139, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.croa-observations-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.croa-observations-panel span {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(242, 206, 99, 0.88);
+}
+
+.croa-observations-panel p {
+  margin: 0;
+  color: #f7f0dd;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .croa-record-wallet-public .croa-record-photo {
+    width: 168px;
+    height: 168px;
+  }
+
+  .croa-record-wallet-public .croa-record-crest-slot {
+    width: 112px;
+    height: 112px;
+  }
+
+  .croa-record-wallet-public .croa-record-wallet-right {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .croa-record-wallet-public .croa-record-photo-stack {
+    margin-right: 24px;
+  }
+
+  .croa-record-wallet-public .croa-record-wallet-left {
+    align-items: center;
+  }
+
+  .croa-record-wallet-public .croa-record-squad-photo {
+    right: -16px;
+    bottom: 10px;
+    width: 72px;
+  }
+}
+
+@media (max-width: 767px) {
+  .croa-record-wallet-public .croa-record-brand {
+    font-size: 1.35rem;
+    letter-spacing: 0.38em;
+  }
+
+  .croa-record-wallet-public .croa-record-codiname {
+    font-size: clamp(1.9rem, 7vw, 2.45rem);
+  }
+
+  .croa-record-wallet-public .croa-record-number {
+    font-size: clamp(1.32rem, 5vw, 1.82rem);
+  }
+
+  .croa-record-wallet-public .croa-record-status-pill {
+    min-height: 54px;
+    font-size: 1.04rem;
+  }
+
+  .croa-record-wallet-public .croa-record-wallet-right {
+    grid-template-columns: repeat(2, max-content);
+    gap: 12px;
+  }
+
+  .croa-record-wallet-public .croa-record-crest-slot {
+    width: 96px;
+    height: 96px;
+  }
+
+  .croa-record-grid-public .field {
+    padding: 12px 14px;
+  }
+
+  .croa-record-grid-public .field input,
+  .croa-record-grid-public .field select {
+    font-size: 1.04rem;
   }
 }
