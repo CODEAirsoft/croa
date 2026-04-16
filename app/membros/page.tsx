@@ -1,18 +1,13 @@
 ﻿import { cookies } from "next/headers";
 import { AppShell } from "@/components/app-shell";
 import { MembersDirectory } from "@/components/members-directory";
-import {
-  CROA_GHOST_NUMBER,
-  MASTER_SESSION_COOKIE,
-  MEMBER_VIEW_SESSION_COOKIE,
-} from "@/lib/master-password";
+import { hasAdministrativeSession } from "@/lib/admin-session";
+import { CROA_GHOST_NUMBER } from "@/lib/master-password";
 import { prisma } from "@/lib/prisma";
 
 export default async function MembersPage() {
   const cookieStore = await cookies();
-  const hasAdministrativeAccess =
-    cookieStore.get(MASTER_SESSION_COOKIE)?.value === "authorized" ||
-    cookieStore.get(MEMBER_VIEW_SESSION_COOKIE)?.value === "authorized";
+  const hasAdministrativeAccess = hasAdministrativeSession(cookieStore);
   const showGhostRecord = hasAdministrativeAccess;
 
   const members = await prisma.member.findMany({

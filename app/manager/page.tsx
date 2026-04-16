@@ -1,13 +1,11 @@
 ﻿import { cookies } from "next/headers";
 import { AppShell } from "@/components/app-shell";
 import { MemberViewAccessPanel } from "@/components/member-view-access-panel";
-import { MASTER_SESSION_COOKIE, MEMBER_VIEW_SESSION_COOKIE } from "@/lib/master-password";
+import { hasAdministrativeSession } from "@/lib/admin-session";
 
 export default async function ManagerPage() {
   const cookieStore = await cookies();
-  const hasAdministrativeAccess =
-    cookieStore.get(MASTER_SESSION_COOKIE)?.value === "authorized" ||
-    cookieStore.get(MEMBER_VIEW_SESSION_COOKIE)?.value === "authorized";
+  const hasAdministrativeAccess = hasAdministrativeSession(cookieStore);
 
   return (
     <main className="page-shell">

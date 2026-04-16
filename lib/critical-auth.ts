@@ -1,9 +1,39 @@
 import { prisma } from "@/lib/prisma";
 import {
-  CROA_GHOST_CODINAME,
+  MASTER_REINTEGRATION_LOGIN,
   MASTER_REINTEGRATION_PASSWORD,
+  MASTER_REINTEGRATION_PASSWORD_HASH,
 } from "@/lib/master-password";
-import { verifyPassword } from "@/lib/password";
+import { verifyPassword, verifyPlainSecret } from "@/lib/password";
+
+function verifyMasterSecret(password: string) {
+  if (MASTER_REINTEGRATION_PASSWORD_HASH) {
+    return verifyPassword(password, MASTER_REINTEGRATION_PASSWORD_HASH);
+  }
+
+  if (MASTER_REINTEGRATION_PASSWORD) {
+    return verifyPlainSecret(password, MASTER_REINTEGRATION_PASSWORD);
+  }
+
+  return false;
+}
+
+export function verifyMasterCredentials({
+  login,
+  password,
+}: {
+  login: string;
+  password: string;
+}) {
+  const normalizedLogin = login.trim().toLowerCase();
+  const expectedLogin = MASTER_REINTEGRATION_LOGIN.trim().toLowerCase();
+
+  if (!normalizedLogin || normalizedLogin !== expectedLogin) {
+    return false;
+  }
+
+  return verifyMasterSecret(password);
+}
 
 export async function verifyCriticalOperatorAccess({
   login,
@@ -12,7 +42,7 @@ export async function verifyCriticalOperatorAccess({
   login: string;
   password: string;
 }) {
-  if (login === CROA_GHOST_CODINAME && password === MASTER_REINTEGRATION_PASSWORD) {
+  if (verifyMasterCredentials({ login, password })) {
     return true;
   }
 

@@ -1,9 +1,6 @@
 import { MemberClass, RoleType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import {
-  CROA_GHOST_CODINAME,
-  MASTER_REINTEGRATION_PASSWORD,
-} from "@/lib/master-password";
+import { verifyMasterCredentials } from "@/lib/critical-auth";
 import { verifyPassword } from "@/lib/password";
 
 export async function verifyAdministrativeMemberViewAccess({
@@ -13,12 +10,7 @@ export async function verifyAdministrativeMemberViewAccess({
   login: string;
   password: string;
 }) {
-  const normalizedLogin = login.trim().toLowerCase();
-
-  if (
-    normalizedLogin === CROA_GHOST_CODINAME.trim().toLowerCase() &&
-    password === MASTER_REINTEGRATION_PASSWORD
-  ) {
+  if (verifyMasterCredentials({ login, password })) {
     return true;
   }
 

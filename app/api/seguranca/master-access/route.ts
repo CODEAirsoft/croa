@@ -1,11 +1,13 @@
 import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { isLikelyMobileDevice } from "@/lib/device";
+import { MASTER_SESSION_COOKIE } from "@/lib/master-password";
 import {
-  CROA_GHOST_CODINAME,
-  MASTER_REINTEGRATION_PASSWORD,
-  MASTER_SESSION_COOKIE,
-} from "@/lib/master-password";
+  clearAdministrativeSessions,
+  createAdministrativeSessionToken,
+  getAdministrativeCookieOptions,
+} from "@/lib/admin-session";
+import { verifyMasterCredentials } from "@/lib/critical-auth";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as {
@@ -22,17 +24,15 @@ export async function POST(request: Request) {
     );
   }
 
-  if (body.codiname !== CROA_GHOST_CODINAME || body.password !== MASTER_REINTEGRATION_PASSWORD) {
+  if (!verifyMasterCredentials({ login: body.codiname ?? "", password: body.password ?? "" })) {
     return NextResponse.json({ error: "Login ou senha master inválidos." }, { status: 401 });
   }
 
-  (await cookies()).set(MASTER_SESSION_COOKIE, "authorized", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: false,
-    maxAge: 60 * 30,
-    path: "/",
-  });
+  (await cookies()).set(
+    MASTER_SESSION_COOKIE,
+    createAdministrativeSessionToken("master"),
+    getAdministrativeCookieOptions(60 * 30),
+  );
 
   return NextResponse.json({
     ok: true,
@@ -41,6 +41,6 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE() {
-  (await cookies()).delete(MASTER_SESSION_COOKIE);
+  clearAdministrativeSessions(await cookies());
   return NextResponse.json({ ok: true });
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { ReactNode } from "react";
 import { AdminModeExitButton } from "@/components/admin-mode-exit-button";
-import { MASTER_SESSION_COOKIE, MEMBER_VIEW_SESSION_COOKIE } from "@/lib/master-password";
+import { hasAdministrativeSession } from "@/lib/admin-session";
 
 const navigationItems = [
   { href: "/", label: "Dashboard" },
@@ -23,9 +23,7 @@ export async function AppShell({
   children: ReactNode;
 }) {
   const cookieStore = await cookies();
-  const hasAdministrativeAccess =
-    cookieStore.get(MASTER_SESSION_COOKIE)?.value === "authorized" ||
-    cookieStore.get(MEMBER_VIEW_SESSION_COOKIE)?.value === "authorized";
+  const hasAdministrativeAccess = hasAdministrativeSession(cookieStore);
   const items = hasAdministrativeAccess
     ? [...navigationItems, { href: "/cadastros", label: "Cadastros" }, { href: "/redacao", label: "Redação" }]
     : navigationItems;

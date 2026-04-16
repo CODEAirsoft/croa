@@ -22,3 +22,14 @@ export function verifyPassword(password: string, storedHash: string) {
 
   return timingSafeEqual(derivedHash, originalHash);
 }
+
+export function verifyPlainSecret(value: string, expected: string) {
+  const normalizedValue = Buffer.from(value);
+  const normalizedExpected = Buffer.from(expected);
+
+  if (normalizedValue.length !== normalizedExpected.length) {
+    return false;
+  }
+
+  return timingSafeEqual(normalizedValue, normalizedExpected);
+}
