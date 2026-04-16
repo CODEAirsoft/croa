@@ -2930,7 +2930,7 @@ body {
   .nav-drawer-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 109;
+    z-index: 9998;
     opacity: 0;
     pointer-events: none;
     background: rgba(0, 0, 0, 0.5);
@@ -2948,14 +2948,12 @@ body {
     top: 0;
     left: 0;
     min-height: 100vh;
-    z-index: 110;
+    z-index: 9999;
     display: grid;
     grid-template-rows: auto auto;
     width: min(84vw, 320px);
     padding: 18px 16px 20px;
-    background:
-      linear-gradient(180deg, rgba(255, 251, 243, 0.98), rgba(243, 239, 228, 0.98)),
-      linear-gradient(180deg, #fff, #f7f3ea);
+    background: #0a110d;
     box-shadow: 20px 0 40px rgba(0, 0, 0, 0.18);
     transform: translateX(-104%);
     transition: transform 220ms ease;
@@ -3231,7 +3229,7 @@ body {
 
 @media (max-width: 1023px) {
   .nav-drawer-backdrop {
-    background: rgba(3, 6, 5, 0.76);
+    background: rgba(0, 0, 0, 0.82);
   }
 
   .nav-drawer {
@@ -3239,7 +3237,7 @@ body {
     padding: 22px 18px 26px;
     overflow: visible;
     border-right: 1px solid rgba(232, 211, 139, 0.18);
-    background: linear-gradient(180deg, rgba(5, 9, 8, 1) 0%, rgba(11, 18, 15, 0.995) 54%, rgba(17, 27, 22, 0.99) 100%);
+    background: #08100c;
     box-shadow: 24px 0 44px rgba(0, 0, 0, 0.42);
   }
 
@@ -3248,7 +3246,7 @@ body {
     top: 0;
     z-index: 2;
     padding-bottom: 12px;
-    background: linear-gradient(180deg, rgba(5, 9, 8, 1) 0%, rgba(7, 12, 10, 0.96) 100%);
+    background: #08100c;
   }
 
   .nav-drawer-header strong,
