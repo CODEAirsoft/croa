@@ -2867,6 +2867,10 @@ body {
 }
 
 @media (max-width: 1023px) {
+  .topbar {
+    overflow: visible;
+  }
+
   .page-shell {
     width: min(100%, calc(100% - 20px));
     padding: 16px 0 40px;
@@ -2947,13 +2951,17 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    min-height: 100vh;
+    bottom: 0;
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
     z-index: 9999;
-    display: grid;
-    grid-template-rows: auto auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     width: min(84vw, 320px);
     padding: 18px 16px 20px;
-    background: #0a110d;
+    background: #08100c !important;
     box-shadow: 20px 0 40px rgba(0, 0, 0, 0.18);
     transform: translateX(-104%);
     transition: transform 220ms ease;
@@ -2969,7 +2977,7 @@ body {
     align-items: center;
     gap: 12px;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(24, 33, 29, 0.08);
+    border-bottom: 1px solid rgba(232, 211, 139, 0.12);
   }
 
   .nav-drawer-header strong {
@@ -2986,10 +2994,14 @@ body {
   }
 
   .nav-drawer-links {
-    display: grid;
-    align-content: start;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: flex-start;
     gap: 10px;
     padding-top: 16px;
+    overflow: visible;
   }
 
   .nav-drawer-link,
@@ -2999,13 +3011,15 @@ body {
     min-height: 48px;
     padding: 0 14px;
     border-radius: 14px;
+    white-space: normal;
   }
 
   .nav-drawer-link {
     display: inline-flex;
     align-items: center;
-    border: 1px solid rgba(24, 33, 29, 0.1);
-    background: rgba(255, 250, 240, 0.9);
+    border: 1px solid rgba(232, 211, 139, 0.16);
+    background: #132019 !important;
+    color: #ffffff !important;
     font-weight: 700;
   }
 
@@ -3229,7 +3243,8 @@ body {
 
 @media (max-width: 1023px) {
   .nav-drawer-backdrop {
-    background: rgba(0, 0, 0, 0.82);
+    display: block;
+    background: rgba(2, 4, 3, 0.86);
   }
 
   .nav-drawer {
@@ -3237,16 +3252,14 @@ body {
     padding: 22px 18px 26px;
     overflow: visible;
     border-right: 1px solid rgba(232, 211, 139, 0.18);
-    background: #08100c;
+    background: #08100c !important;
     box-shadow: 24px 0 44px rgba(0, 0, 0, 0.42);
   }
 
   .nav-drawer-header {
-    position: sticky;
-    top: 0;
-    z-index: 2;
+    position: relative;
     padding-bottom: 12px;
-    background: #08100c;
+    background: #08100c !important;
   }
 
   .nav-drawer-header strong,
@@ -3265,8 +3278,8 @@ body {
     min-height: 52px;
     padding: 0 16px;
     border-color: rgba(232, 211, 139, 0.16);
-    background: rgba(255, 255, 255, 0.06);
-    color: #ffffff;
+    background: #132019 !important;
+    color: #ffffff !important;
     font-size: 0.98rem;
     font-weight: 700;
     letter-spacing: 0.02em;
