@@ -2912,23 +2912,46 @@ body {
   }
 
   .brand-header {
-    gap: 12px;
-    align-items: center;
-    padding-left: 52px;
+    position: relative;
+    min-height: 108px;
+    gap: 10px;
+    align-items: stretch;
+    justify-items: center;
+    padding-left: 0;
+    padding-top: 6px;
   }
 
   .brand-logo {
-    width: 72px;
-    height: 72px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 68px;
+    height: 68px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.26);
+  }
+
+  .brand-copy {
+    width: 100%;
+    padding: 4px 6px 0;
+    text-align: center;
+    justify-items: center;
+  }
+
+  .brand-kicker {
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
   }
 
   .brand-title {
-    font-size: 0.95rem;
-    line-height: 1.25;
+    font-size: 0.88rem;
+    line-height: 1.22;
+    white-space: normal;
+    max-width: 28ch;
   }
 
   .topbar-title {
-    margin-top: 12px;
+    margin-top: 4px;
+    text-align: center;
     font-size: clamp(1.45rem, 6vw, 2.3rem);
     line-height: 1.08;
   }
@@ -2939,7 +2962,7 @@ body {
 
   .nav-drawer-toggle {
     position: absolute;
-    top: 16px;
+    top: 82px;
     left: 16px;
     z-index: 30;
     display: inline-grid;
