@@ -1,8 +1,7 @@
 ﻿import Image from "next/image";
-import Link from "next/link";
 import { cookies } from "next/headers";
 import { ReactNode } from "react";
-import { AdminModeExitButton } from "@/components/admin-mode-exit-button";
+import { AppShellNavigation } from "@/components/app-shell-navigation";
 import { hasAdministrativeSession } from "@/lib/admin-session";
 
 const navigationItems = [
@@ -50,14 +49,7 @@ export async function AppShell({
             <h1 className="topbar-title">{title}</h1>
           </div>
         </div>
-        <nav className="nav-tabs" aria-label="Navegacao principal">
-          {items.map((item) => (
-            <Link className="nav-link" href={item.href} key={item.href}>
-              {item.label}
-            </Link>
-          ))}
-          {hasAdministrativeAccess ? <AdminModeExitButton /> : null}
-        </nav>
+        <AppShellNavigation hasAdministrativeAccess={hasAdministrativeAccess} items={items} />
       </header>
       {children}
     </div>

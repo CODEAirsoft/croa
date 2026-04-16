@@ -50,12 +50,7 @@ export function DashboardNewsMenu({ items }: { items: NewsItem[] }) {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return items;
     return items.filter((item) => {
-      const searchable = [
-        item.title,
-        item.excerpt ?? "",
-        item.body ?? "",
-        ...getSearchableDateParts(item.createdAt),
-      ];
+      const searchable = [item.title, item.excerpt ?? "", item.body ?? "", ...getSearchableDateParts(item.createdAt)];
       return searchable.some((part) => part.toLowerCase().includes(normalized));
     });
   }, [items, query]);
@@ -118,6 +113,7 @@ export function DashboardNewsMenu({ items }: { items: NewsItem[] }) {
             </div>
           </Link>
         ))}
+
         {!filteredItems.length ? (
           <p className="empty-state">
             Nada foi encontrado em referência a <strong>{query}</strong>.

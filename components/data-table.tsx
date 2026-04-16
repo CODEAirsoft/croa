@@ -31,7 +31,7 @@ export function DataTable<T extends { id: string }>({
           {rows.map((row) => (
             <tr key={row.id}>
               {columns.map((column) => (
-                <td key={String(column.key)}>
+                <td data-label={column.header} key={String(column.key)}>
                   {column.render ? column.render(row) : String(row[column.key as keyof T] ?? "")}
                 </td>
               ))}

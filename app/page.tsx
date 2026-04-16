@@ -102,6 +102,18 @@ export default async function Home() {
     <main className="page-shell">
       <AppShell title="Dashboard" description="Painel central do CROA para acompanhar operação, cadastros, treinos, evolução e movimento do sistema.">
         <section className="dashboard-news-grid">
+          <section className="hero hero-panel-only">
+            <aside className="hero-panel card">
+              <span className="eyebrow">Panorama imediato</span>
+              <h2>Leitura operacional do ecossistema</h2>
+              <div className="metric-grid">
+                {keyMetrics.map((metric) => (
+                  <MetricCard key={metric.label} {...metric} />
+                ))}
+              </div>
+            </aside>
+          </section>
+
           <DashboardNewsMenu
             items={(newsPosts as any[]).map((post) => ({
               id: post.id,
@@ -115,18 +127,6 @@ export default async function Home() {
               imageScale: post.imageScale,
             }))}
           />
-
-          <section className="hero hero-panel-only">
-            <aside className="hero-panel card">
-              <span className="eyebrow">Panorama imediato</span>
-              <h2>Leitura operacional do ecossistema</h2>
-              <div className="metric-grid">
-                {keyMetrics.map((metric) => (
-                  <MetricCard key={metric.label} {...metric} />
-                ))}
-              </div>
-            </aside>
-          </section>
         </section>
 
         <section className="dashboard-grid">

@@ -178,6 +178,7 @@ export function MemberCroaRecord({
   const [success, setSuccess] = useState("");
 
   const currentMember = isEditing ? draftMember : savedMember;
+  const isPublicView = !isEditing;
   const selectedStatusClass =
     statusOptions.find((item) => item.value === currentMember.status)?.badgeClass ?? "status-active";
 
@@ -571,148 +572,152 @@ export function MemberCroaRecord({
         </div>
       ) : null}
 
-      <div className="quick-form-grid croa-record-grid">
-        <div className="form-section-title field-full">Dados Pessoais</div>
+      <div className={`quick-form-grid croa-record-grid${isPublicView ? " croa-record-grid-public" : ""}`}>
+        {!isPublicView ? (
+          <>
+            <div className="form-section-title field-full">Dados Pessoais</div>
 
-        <label className="field">
-          <span>Codinome</span>
-          <input
-            onChange={(event) => updateField("codiname", event.target.value)}
-            readOnly={!isEditing}
-            value={currentMember.codiname}
-          />
-        </label>
+            <label className="field">
+              <span>Codinome</span>
+              <input
+                onChange={(event) => updateField("codiname", event.target.value)}
+                readOnly={!isEditing}
+                value={currentMember.codiname}
+              />
+            </label>
 
-        <label className="field">
-          <span>Nome</span>
-          <input
-            onChange={(event) => updateField("fullName", event.target.value)}
-            readOnly={!isEditing}
-            value={currentMember.fullName}
-          />
-        </label>
+            <label className="field">
+              <span>Nome</span>
+              <input
+                onChange={(event) => updateField("fullName", event.target.value)}
+                readOnly={!isEditing}
+                value={currentMember.fullName}
+              />
+            </label>
 
-        <label className="field">
-          <span>Data de inscrição</span>
-          <input
-            onChange={(event) => updateField("enrollmentDate", event.target.value)}
-            readOnly={!isEditing}
-            type="date"
-            value={currentMember.enrollmentDate}
-          />
-        </label>
+            <label className="field">
+              <span>Data de inscrição</span>
+              <input
+                onChange={(event) => updateField("enrollmentDate", event.target.value)}
+                readOnly={!isEditing}
+                type="date"
+                value={currentMember.enrollmentDate}
+              />
+            </label>
 
-        <label className="field">
-          <span>Data de nascimento</span>
-          <input
-            onChange={(event) => updateField("birthDate", event.target.value)}
-            readOnly={!isEditing}
-            type="date"
-            value={currentMember.birthDate}
-          />
-        </label>
+            <label className="field">
+              <span>Data de nascimento</span>
+              <input
+                onChange={(event) => updateField("birthDate", event.target.value)}
+                readOnly={!isEditing}
+                type="date"
+                value={currentMember.birthDate}
+              />
+            </label>
 
-        <div className="phone-grid field-full">
-          <label className="field">
-            <span>DDI</span>
-            <input
-              inputMode="numeric"
-              maxLength={2}
-              onChange={(event) => updateField("ddi", formatDdi(event.target.value))}
-              readOnly={!isEditing}
-              value={currentMember.ddi}
-            />
-          </label>
+            <div className="phone-grid field-full">
+              <label className="field">
+                <span>DDI</span>
+                <input
+                  inputMode="numeric"
+                  maxLength={2}
+                  onChange={(event) => updateField("ddi", formatDdi(event.target.value))}
+                  readOnly={!isEditing}
+                  value={currentMember.ddi}
+                />
+              </label>
 
-          <label className="field">
-            <span>DDD</span>
-            <input
-              inputMode="numeric"
-              maxLength={2}
-              onChange={(event) => updateField("ddd", formatDdd(event.target.value))}
-              readOnly={!isEditing}
-              value={currentMember.ddd}
-            />
-          </label>
+              <label className="field">
+                <span>DDD</span>
+                <input
+                  inputMode="numeric"
+                  maxLength={2}
+                  onChange={(event) => updateField("ddd", formatDdd(event.target.value))}
+                  readOnly={!isEditing}
+                  value={currentMember.ddd}
+                />
+              </label>
 
-          <label className="field phone-number-field">
-            <span>Celular</span>
-            <input
-              inputMode="numeric"
-              maxLength={12}
-              onChange={(event) => updateField("phoneNumber", formatPhoneInternational(event.target.value))}
-              readOnly={!isEditing}
-              value={currentMember.phoneNumber}
-            />
-          </label>
-        </div>
+              <label className="field phone-number-field">
+                <span>Celular</span>
+                <input
+                  inputMode="numeric"
+                  maxLength={12}
+                  onChange={(event) => updateField("phoneNumber", formatPhoneInternational(event.target.value))}
+                  readOnly={!isEditing}
+                  value={currentMember.phoneNumber}
+                />
+              </label>
+            </div>
 
-        <label className="field field-full">
-          <span>E-mail</span>
-          <input
-            onChange={(event) => updateField("email", event.target.value)}
-            readOnly={!isEditing}
-            type="email"
-            value={currentMember.email}
-          />
-        </label>
+            <label className="field field-full">
+              <span>E-mail</span>
+              <input
+                onChange={(event) => updateField("email", event.target.value)}
+                readOnly={!isEditing}
+                type="email"
+                value={currentMember.email}
+              />
+            </label>
 
-        <label className="field field-full">
-          <span>RG</span>
-          <input
-            maxLength={12}
-            onChange={(event) => updateField("rg", formatRg(event.target.value))}
-            readOnly={!isEditing}
-            value={currentMember.rg}
-          />
-        </label>
+            <label className="field field-full">
+              <span>RG</span>
+              <input
+                maxLength={12}
+                onChange={(event) => updateField("rg", formatRg(event.target.value))}
+                readOnly={!isEditing}
+                value={currentMember.rg}
+              />
+            </label>
 
-        <div className="address-grid field-full">
-          <label className="field field-full">
-            <span>Endereço de residência</span>
-            <input
-              onChange={(event) => updateField("addressStreet", event.target.value)}
-              readOnly={!isEditing}
-              value={currentMember.addressStreet}
-            />
-          </label>
+            <div className="address-grid field-full">
+              <label className="field field-full">
+                <span>Endereço de residência</span>
+                <input
+                  onChange={(event) => updateField("addressStreet", event.target.value)}
+                  readOnly={!isEditing}
+                  value={currentMember.addressStreet}
+                />
+              </label>
 
-          <label className="field">
-            <span>Número</span>
-            <input
-              onChange={(event) => updateField("addressNumber", event.target.value)}
-              readOnly={!isEditing}
-              value={currentMember.addressNumber}
-            />
-          </label>
+              <label className="field">
+                <span>Número</span>
+                <input
+                  onChange={(event) => updateField("addressNumber", event.target.value)}
+                  readOnly={!isEditing}
+                  value={currentMember.addressNumber}
+                />
+              </label>
 
-          <label className="field">
-            <span>Bairro</span>
-            <input
-              onChange={(event) => updateField("neighborhood", event.target.value)}
-              readOnly={!isEditing}
-              value={currentMember.neighborhood}
-            />
-          </label>
+              <label className="field">
+                <span>Bairro</span>
+                <input
+                  onChange={(event) => updateField("neighborhood", event.target.value)}
+                  readOnly={!isEditing}
+                  value={currentMember.neighborhood}
+                />
+              </label>
 
-          <label className="field">
-            <span>CEP</span>
-            <input
-              onChange={(event) => updateField("postalCode", event.target.value)}
-              readOnly={!isEditing}
-              value={currentMember.postalCode}
-            />
-          </label>
+              <label className="field">
+                <span>CEP</span>
+                <input
+                  onChange={(event) => updateField("postalCode", event.target.value)}
+                  readOnly={!isEditing}
+                  value={currentMember.postalCode}
+                />
+              </label>
 
-          <label className="field field-full">
-            <span>Complemento</span>
-            <input
-              onChange={(event) => updateField("addressComplement", event.target.value)}
-              readOnly={!isEditing}
-              value={currentMember.addressComplement}
-            />
-          </label>
-        </div>
+              <label className="field field-full">
+                <span>Complemento</span>
+                <input
+                  onChange={(event) => updateField("addressComplement", event.target.value)}
+                  readOnly={!isEditing}
+                  value={currentMember.addressComplement}
+                />
+              </label>
+            </div>
+          </>
+        ) : null}
 
         <div className="form-section-title field-full">Dados do Operador</div>
 
@@ -788,7 +793,7 @@ export function MemberCroaRecord({
           </label>
         ) : null}
 
-        {currentMember.memberClass === "MASTER" || currentMember.memberClass === "ALMIGHTY" ? (
+        {!isPublicView && (currentMember.memberClass === "MASTER" || currentMember.memberClass === "ALMIGHTY") ? (
           <>
             <div className="form-section-title field-full">Acesso Privilegiado do Operador</div>
 
@@ -814,52 +819,56 @@ export function MemberCroaRecord({
           </>
         ) : null}
 
-        <div className="form-section-title field-full">Dados de Emergência</div>
+        {!isPublicView ? (
+          <>
+            <div className="form-section-title field-full">Dados de Emergência</div>
 
-        <label className="field">
-          <span>Tipo de sangue</span>
-          <select
-            disabled={!isEditing}
-            onChange={(event) => updateField("bloodType", event.target.value as BloodType | "")}
-            value={currentMember.bloodType}
-          >
-            <option value="">Selecione</option>
-            {bloodTypeOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+            <label className="field">
+              <span>Tipo de sangue</span>
+              <select
+                disabled={!isEditing}
+                onChange={(event) => updateField("bloodType", event.target.value as BloodType | "")}
+                value={currentMember.bloodType}
+              >
+                <option value="">Selecione</option>
+                {bloodTypeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
 
-        <label className="field">
-          <span>Contato de emergência</span>
-          <input
-            onChange={(event) => updateField("emergencyContactName", event.target.value)}
-            readOnly={!isEditing}
-            value={currentMember.emergencyContactName}
-          />
-        </label>
+            <label className="field">
+              <span>Contato de emergência</span>
+              <input
+                onChange={(event) => updateField("emergencyContactName", event.target.value)}
+                readOnly={!isEditing}
+                value={currentMember.emergencyContactName}
+              />
+            </label>
 
-        <label className="field field-full">
-          <span>Número do contato de emergência</span>
-          <input
-            onChange={(event) => updateField("emergencyContactPhone", event.target.value)}
-            readOnly={!isEditing}
-            value={currentMember.emergencyContactPhone}
-          />
-        </label>
+            <label className="field field-full">
+              <span>Número do contato de emergência</span>
+              <input
+                onChange={(event) => updateField("emergencyContactPhone", event.target.value)}
+                readOnly={!isEditing}
+                value={currentMember.emergencyContactPhone}
+              />
+            </label>
 
-        <label className="field field-full">
-          <span>Descrição / observações</span>
-          <textarea
-            maxLength={500}
-            onChange={(event) => updateField("observations", event.target.value)}
-            readOnly={!isEditing}
-            rows={5}
-            value={currentMember.observations}
-          />
-        </label>
+            <label className="field field-full">
+              <span>Descrição / observações</span>
+              <textarea
+                maxLength={500}
+                onChange={(event) => updateField("observations", event.target.value)}
+                readOnly={!isEditing}
+                rows={5}
+                value={currentMember.observations}
+              />
+            </label>
+          </>
+        ) : null}
       </div>
 
       {error ? <p className="form-message error-text">{error}</p> : null}
