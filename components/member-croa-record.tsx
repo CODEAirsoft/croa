@@ -395,16 +395,6 @@ export function MemberCroaRecord({
         </div>
 
         <div className="croa-record-wallet-center">
-          {isEditing ? (
-            <div className="croa-record-header-line">
-              <Image alt="Logotipo CODE Airsoft" height={58} priority src="/code-airsoft-logo.jpg" width={58} />
-              <div className="croa-record-header-copy">
-                <span className="croa-record-header-overline">CODE Airsoft</span>
-                <strong className="croa-record-header-title">Carteira oficial do operador</strong>
-              </div>
-            </div>
-          ) : null}
-
           <strong className="croa-record-codiname">{currentMember.codiname || "Sem codinome"}</strong>
           <div className="croa-record-number">{formatCroaCode(currentMember.croaNumber)}</div>
 
