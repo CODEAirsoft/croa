@@ -43,7 +43,10 @@ export async function AppShell({
               />
               <div className="brand-copy">
                 <span className="brand-kicker">CODE Airsoft</span>
-                <strong className="brand-title">CROA - Central de Registro de Operador de Airsoft</strong>
+                <strong className="brand-title">
+                  <span className="brand-title-main">CROA</span>
+                  <span className="brand-title-sub"> - Central de Registro de Operador de Airsoft</span>
+                </strong>
               </div>
             </div>
             <h1 className="topbar-title">{title}</h1>
