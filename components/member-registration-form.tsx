@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useRef, useState, useTransition } from "react";
 import { formatCroaCode } from "@/lib/croa";
 import { formatDdd, formatDdi, formatPhoneInternational, formatRg } from "@/lib/field-validation";
+import { compressImageFileAsDataUrl, readFileAsDataUrl } from "@/lib/image-data-url";
 
 const classOptions: { value: MemberClass; label: string }[] = [
   { value: "STANDARD", label: "STANDARD" },
@@ -63,15 +64,6 @@ type FieldOption = {
   id: string;
   label: string;
 };
-
-function readFileAsDataUrl(file: File) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result ?? ""));
-    reader.onerror = () => reject(new Error("Falha ao carregar a imagem."));
-    reader.readAsDataURL(file);
-  });
-}
 
 export function MemberRegistrationForm({
   fields,
@@ -134,7 +126,7 @@ export function MemberRegistrationForm({
     }
 
     try {
-      const dataUrl = await readFileAsDataUrl(file);
+      const dataUrl = await compressImageFileAsDataUrl(file);
 
       if (side === "left") {
         setCrestLeftDataUrl(dataUrl);
@@ -143,7 +135,7 @@ export function MemberRegistrationForm({
 
       setCrestRightDataUrl(dataUrl);
     } catch {
-      setError("Não foi possível carregar o brasão da carteirinha.");
+      setError("Não foi possível carregar ou otimizar o brasão da carteirinha.");
     }
   }
 
