@@ -68,7 +68,7 @@ export function DashboardNewsMenu({ items }: { items: NewsItem[] }) {
       <div className="card-header news-menu-header">
         <div>
           <span className="eyebrow">Menu de notícias</span>
-          <h2>Redação integrada ao CROA</h2>
+          <h2>Nossa Resenha</h2>
         </div>
         <label className="news-menu-search">
           <span className="visually-hidden">Buscar notícias</span>
@@ -105,11 +105,8 @@ export function DashboardNewsMenu({ items }: { items: NewsItem[] }) {
               <div className="news-menu-image news-menu-image-placeholder" />
             )}
             <div className="news-menu-copy">
-              <div className="news-menu-topline">
-                <strong>{post.title}</strong>
-                <span className="news-menu-date">{formatDateLabel(post.createdAt)}</span>
-              </div>
-              <p>{post.excerpt || "Comunicado oficial do CROA."}</p>
+              <strong>{post.title}</strong>
+              <span className="news-menu-date">{formatDateLabel(post.createdAt)}</span>
             </div>
           </Link>
         ))}
