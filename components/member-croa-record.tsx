@@ -834,8 +834,6 @@ export function MemberCroaRecord({
 
         {!isEditing && currentMember.squadName ? renderReadOnlyField("Squad", currentMember.squadName) : null}
 
-        {!isEditing && currentMember.squadFieldName ? renderReadOnlyField("Campo do squad", currentMember.squadFieldName) : null}
-
         {isEditing ? (
           <label className="field">
             <span>Classe</span>
@@ -939,6 +937,24 @@ export function MemberCroaRecord({
           </>
         ) : null}
 
+        {!isEditing ? (
+          <div className="field-full croa-history-inline">
+            <button
+              className="button croa-history-toggle"
+              onClick={() => setShowHistory((current) => !current)}
+              type="button"
+            >
+              Histórico
+            </button>
+
+            {showHistory ? (
+              <div className="croa-history-panel">
+                <p>{currentMember.history || "Sem histórico registrado."}</p>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
         {(!isPublicView || canViewPrivateDetails) ? (
           <>
             <div className="form-section-title field-full">Dados de Emergência</div>
@@ -1014,21 +1030,6 @@ export function MemberCroaRecord({
 
       {!isEditing ? (
         <div className="croa-public-extra">
-          <button
-            className="button croa-history-toggle"
-            onClick={() => setShowHistory((current) => !current)}
-            type="button"
-          >
-            Histórico
-          </button>
-
-          {showHistory ? (
-            <div className="croa-history-panel">
-              <span>Histórico</span>
-              <p>{currentMember.history || "Sem histórico registrado."}</p>
-            </div>
-          ) : null}
-
           <button
             className="button croa-emergency-toggle"
             onClick={() => setShowEmergency((current) => !current)}
