@@ -215,6 +215,7 @@ model Member {
   emergencyContactName  String?
   emergencyContactPhone String?
   observations          String?            @db.VarChar(500)
+  history               String?
   user                  User?              @relation(fields: [userId], references: [id])
   fieldId               String?
   field                 Field?             @relation("PracticeField", fields: [fieldId], references: [id])

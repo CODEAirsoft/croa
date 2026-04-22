@@ -91,6 +91,7 @@ export async function POST(request: Request) {
       otherRole?: string;
       level?: string;
       observations?: string;
+      history?: string;
       accessLogin?: string;
       accessPassword?: string;
       adminAuthorizationLogin?: string;
@@ -267,6 +268,7 @@ export async function POST(request: Request) {
         emergencyContactName: body.emergencyContactName?.trim() || null,
         emergencyContactPhone: body.emergencyContactPhone?.trim() || null,
         observations: body.observations?.trim() || null,
+        history: body.history?.trim() || null,
       } as Record<string, unknown>;
 
     const item = await prisma.member.create({

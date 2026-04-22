@@ -3544,6 +3544,25 @@ body {
   gap: 16px;
 }
 
+.croa-history-toggle {
+  width: min(100%, 340px);
+  min-height: 52px;
+  margin: 0 auto;
+  border: 1px solid rgba(255, 194, 102, 0.64);
+  background: linear-gradient(180deg, #f6b45d 0%, #d98224 100%);
+  color: #211005;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 24px rgba(217, 130, 36, 0.22);
+}
+
+.croa-history-toggle:hover {
+  background: linear-gradient(180deg, #ffc978 0%, #ee9435 100%);
+  color: #140a03;
+}
+
 .croa-emergency-toggle {
   width: min(100%, 340px);
   min-height: 58px;
@@ -3559,6 +3578,7 @@ body {
 }
 
 .croa-emergency-panel,
+.croa-history-panel,
 .croa-observations-panel {
   padding: 14px;
   border-radius: 18px;
@@ -3566,11 +3586,13 @@ body {
   background: rgba(255, 255, 255, 0.04);
 }
 
+.croa-history-panel,
 .croa-observations-panel {
   display: grid;
   gap: 8px;
 }
 
+.croa-history-panel span,
 .croa-observations-panel span {
   font-size: 0.78rem;
   text-transform: uppercase;
@@ -3578,6 +3600,7 @@ body {
   color: rgba(242, 206, 99, 0.88);
 }
 
+.croa-history-panel p,
 .croa-observations-panel p {
   margin: 0;
   color: #f7f0dd;

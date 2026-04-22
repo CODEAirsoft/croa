@@ -104,6 +104,7 @@ type MemberCroaRecordData = {
   emergencyContactName: string;
   emergencyContactPhone: string;
   observations: string;
+  history: string;
 };
 
 function readFileAsDataUrl(file: File) {
@@ -148,6 +149,7 @@ function buildPayload(member: MemberCroaRecordData, nextPassword: string) {
     emergencyContactName: member.emergencyContactName.trim() || null,
     emergencyContactPhone: member.emergencyContactPhone.trim() || null,
     observations: member.observations.trim() || null,
+    history: member.history.trim() || null,
   };
 
   if (nextPassword.trim()) {
@@ -179,6 +181,7 @@ export function MemberCroaRecord({
   const [nextPassword, setNextPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showHistory, setShowHistory] = useState(false);
   const [showEmergency, setShowEmergency] = useState(false);
 
   const currentMember = isEditing ? draftMember : savedMember;
@@ -986,6 +989,17 @@ export function MemberCroaRecord({
                     value={currentMember.observations}
                   />
                 </label>
+
+                <label className="field field-full">
+                  <span>Histórico</span>
+                  <textarea
+                    onChange={(event) => updateField("history", event.target.value)}
+                    placeholder="Eventos realizados, conclusão do evento e data da realização."
+                    readOnly={!isEditing}
+                    rows={7}
+                    value={currentMember.history}
+                  />
+                </label>
               </>
             ) : (
               <>
@@ -1000,6 +1014,21 @@ export function MemberCroaRecord({
 
       {!isEditing ? (
         <div className="croa-public-extra">
+          <button
+            className="button croa-history-toggle"
+            onClick={() => setShowHistory((current) => !current)}
+            type="button"
+          >
+            Histórico
+          </button>
+
+          {showHistory ? (
+            <div className="croa-history-panel">
+              <span>Histórico</span>
+              <p>{currentMember.history || "Sem histórico registrado."}</p>
+            </div>
+          ) : null}
+
           <button
             className="button croa-emergency-toggle"
             onClick={() => setShowEmergency((current) => !current)}

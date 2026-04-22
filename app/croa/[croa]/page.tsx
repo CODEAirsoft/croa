@@ -112,6 +112,7 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
     emergencyContactName: member.emergencyContactName ?? "",
     emergencyContactPhone: member.emergencyContactPhone ?? "",
     observations: member.observations ?? "",
+    history: (member as { history?: string | null }).history ?? "",
   };
 
   return (

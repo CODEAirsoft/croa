@@ -155,6 +155,7 @@ export async function PATCH(request: Request, { params }: Params) {
       emergencyContactName: body.emergencyContactName ?? undefined,
       emergencyContactPhone: body.emergencyContactPhone ?? undefined,
       observations: body.observations ?? undefined,
+      history: body.history ?? undefined,
     };
 
     const item = await prisma.member.update({

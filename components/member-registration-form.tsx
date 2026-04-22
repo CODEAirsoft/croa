@@ -222,6 +222,7 @@ export function MemberRegistrationForm({
       emergencyContactName: String(formData.get("emergencyContactName") ?? "").trim(),
       emergencyContactPhone: String(formData.get("emergencyContactPhone") ?? "").trim(),
       observations: String(formData.get("observations") ?? "").trim(),
+      history: String(formData.get("history") ?? "").trim(),
       photoDataUrl,
       photoScale,
       photoPositionX,
@@ -712,6 +713,15 @@ export function MemberRegistrationForm({
             name="observations"
             placeholder="Observações administrativas sobre o operador (máximo 500 caracteres)."
             rows={5}
+          />
+        </label>
+
+        <label className="field field-full">
+          <span>Histórico</span>
+          <textarea
+            name="history"
+            placeholder="Eventos realizados, conclusão do evento e data da realização."
+            rows={7}
           />
         </label>
 
