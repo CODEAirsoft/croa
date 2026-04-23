@@ -18,13 +18,19 @@ export async function AppShell({
   children,
 }: {
   title: string;
-  description: string;
+  description?: string;
   children: ReactNode;
 }) {
   const cookieStore = await cookies();
   const hasAdministrativeAccess = hasAdministrativeSession(cookieStore);
   const items = hasAdministrativeAccess
-    ? [...navigationItems, { href: "/cadastros", label: "Cadastros" }, { href: "/redacao", label: "Redação" }]
+    ? [
+        ...navigationItems,
+        { href: "/sumula", label: "Sumula" },
+        { href: "/ranger", label: "Ranger" },
+        { href: "/cadastros", label: "Cadastros" },
+        { href: "/redacao", label: "Redação" },
+      ]
     : navigationItems;
 
   return (
