@@ -11,7 +11,28 @@ export default async function MembersPage() {
   const showGhostRecord = hasAdministrativeAccess;
 
   const members = await prisma.member.findMany({
-    include: {
+    select: {
+      id: true,
+      photoDataUrl: true,
+      photoScale: true,
+      photoPositionX: true,
+      photoPositionY: true,
+      codiname: true,
+      croaNumber: true,
+      fullName: true,
+      birthDate: true,
+      enrollmentDate: true,
+      ddi: true,
+      ddd: true,
+      phoneNumber: true,
+      rg: true,
+      email: true,
+      role: true,
+      otherRole: true,
+      memberClass: true,
+      level: true,
+      status: true,
+      createdAt: true,
       field: {
         select: {
           name: true,
