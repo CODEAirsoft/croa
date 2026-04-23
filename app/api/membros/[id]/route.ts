@@ -1,5 +1,6 @@
 ﻿import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { OfficialSubclass } from "@prisma/client";
 import { hasAdministrativeSession } from "@/lib/admin-session";
 import { formatDdd, formatDdi, formatPhoneInternational, isValidRg } from "@/lib/field-validation";
 import { CROA_GHOST_NUMBER } from "@/lib/master-password";
@@ -11,6 +12,8 @@ type Params = {
     id: string;
   }>;
 };
+
+const VALID_OFFICIAL_SUBCLASSES = ["AUXILIAR", "RANGER", "ARBITRO", "REPORTER", "GERENTE"] as const;
 
 export async function PATCH(request: Request, { params }: Params) {
   try {
@@ -51,9 +54,31 @@ export async function PATCH(request: Request, { params }: Params) {
         : body.phoneNumber === null
           ? null
           : undefined;
+    const nextMemberClass = typeof body.memberClass === "string" ? body.memberClass : undefined;
+    const nextOfficialSubclass =
+      typeof body.officialSubclass === "string"
+        ? body.officialSubclass
+        : body.officialSubclass === null
+          ? null
+          : undefined;
 
     if (nextRg !== undefined && nextRg !== null && !isValidRg(nextRg)) {
       return NextResponse.json({ error: "RG inválido. Informe um RG em formato válido." }, { status: 400 });
+    }
+
+    if (
+      nextMemberClass === "OFICIAL" &&
+      !VALID_OFFICIAL_SUBCLASSES.includes(nextOfficialSubclass as OfficialSubclass)
+    ) {
+      return NextResponse.json({ error: "Sub classe oficial inválida." }, { status: 400 });
+    }
+
+    if (
+      nextOfficialSubclass !== undefined &&
+      nextOfficialSubclass !== null &&
+      !VALID_OFFICIAL_SUBCLASSES.includes(nextOfficialSubclass as OfficialSubclass)
+    ) {
+      return NextResponse.json({ error: "Sub classe oficial inválida." }, { status: 400 });
     }
 
     if (
@@ -142,13 +167,13 @@ export async function PATCH(request: Request, { params }: Params) {
       role: body.role ?? undefined,
       otherRole: body.otherRole ?? undefined,
       level: body.level ?? undefined,
-      memberClass: body.memberClass ?? undefined,
+      memberClass: nextMemberClass ?? undefined,
       officialSubclass:
-        body.memberClass === "OFICIAL"
-          ? body.officialSubclass ?? undefined
-          : body.memberClass
+        nextMemberClass === "OFICIAL"
+          ? nextOfficialSubclass ?? undefined
+          : nextMemberClass
             ? null
-            : body.officialSubclass ?? undefined,
+            : nextOfficialSubclass ?? undefined,
       status: body.status ?? undefined,
       fieldId: body.fieldId ?? undefined,
       squadId: body.squadId ?? undefined,
@@ -166,7 +191,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
     const item = await prisma.member.update({
       where: { id },
-      data,
+      data: data as never,
     });
 
     return NextResponse.json({ item });

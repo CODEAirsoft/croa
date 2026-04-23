@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { BloodType, MemberClass, MemberLevel, MemberStatus, RoleType } from "@prisma/client";
+import { BloodType, MemberClass, MemberLevel, MemberStatus, OfficialSubclass, RoleType } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useRef, useState, useTransition } from "react";
@@ -18,7 +18,16 @@ const classOptions: { value: MemberClass; label: string }[] = [
   { value: "PREMIUM", label: "PREMIUM" },
   { value: "TOP_TEAM", label: "TOP TEAM" },
   { value: "MASTER", label: "MASTER" },
+  { value: "OFICIAL", label: "OFICIAL" },
   { value: "ALMIGHTY", label: "ALMIGHTY" },
+];
+
+const officialSubclassOptions: { value: OfficialSubclass; label: string }[] = [
+  { value: "AUXILIAR", label: "Auxiliar" },
+  { value: "RANGER", label: "Ranger" },
+  { value: "ARBITRO", label: "Árbitro" },
+  { value: "REPORTER", label: "Reporter" },
+  { value: "GERENTE", label: "Gerente" },
 ];
 
 const levelOptions: { value: MemberLevel; label: string }[] = [
@@ -91,6 +100,7 @@ type MemberCroaRecordData = {
   otherRole: string;
   level: MemberLevel;
   memberClass: MemberClass;
+  officialSubclass: OfficialSubclass | "";
   status: MemberStatus;
   fieldId: string;
   squadName: string;
@@ -130,6 +140,7 @@ function buildPayload(member: MemberCroaRecordData, nextPassword: string) {
     otherRole: member.otherRole.trim() || null,
     level: member.level,
     memberClass: member.memberClass,
+    officialSubclass: member.memberClass === "OFICIAL" ? member.officialSubclass || "AUXILIAR" : null,
     status: member.status,
     fieldId: member.fieldId || null,
     addressStreet: member.addressStreet.trim() || null,
@@ -184,6 +195,9 @@ export function MemberCroaRecord({
   const selectedFieldLabel = fields.find((field) => field.id === currentMember.fieldId)?.label ?? "Não vinculado";
   const selectedClassLabel =
     classOptions.find((option) => option.value === currentMember.memberClass)?.label ?? currentMember.memberClass;
+  const selectedOfficialSubclassLabel =
+    officialSubclassOptions.find((option) => option.value === currentMember.officialSubclass)?.label ??
+    currentMember.officialSubclass;
   const selectedLevelLabel =
     levelOptions.find((option) => option.value === currentMember.level)?.label ?? currentMember.level;
   const selectedRoleLabel =
@@ -206,6 +220,14 @@ export function MemberCroaRecord({
     setDraftMember((current) => ({
       ...current,
       [key]: value,
+    }));
+  }
+
+  function updateMemberClass(memberClass: MemberClass) {
+    setDraftMember((current) => ({
+      ...current,
+      memberClass,
+      officialSubclass: memberClass === "OFICIAL" ? current.officialSubclass || "AUXILIAR" : "",
     }));
   }
 
@@ -821,7 +843,7 @@ export function MemberCroaRecord({
             <span>Classe</span>
             <select
               disabled={!isEditing}
-              onChange={(event) => updateField("memberClass", event.target.value as MemberClass)}
+              onChange={(event) => updateMemberClass(event.target.value as MemberClass)}
               value={currentMember.memberClass}
             >
               {classOptions.map((option) => (
@@ -834,6 +856,27 @@ export function MemberCroaRecord({
         ) : (
           renderReadOnlyField("Classe", selectedClassLabel)
         )}
+
+        {currentMember.memberClass === "OFICIAL" ? (
+          isEditing ? (
+            <label className="field">
+              <span>Sub classe</span>
+              <select
+                disabled={!isEditing}
+                onChange={(event) => updateField("officialSubclass", event.target.value as OfficialSubclass)}
+                value={currentMember.officialSubclass || "AUXILIAR"}
+              >
+                {officialSubclassOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            renderReadOnlyField("Sub classe", selectedOfficialSubclassLabel)
+          )
+        ) : null}
 
         {isEditing ? (
           <label className="field">

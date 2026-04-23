@@ -26,6 +26,7 @@ export function formatMemberClass(memberClass: MemberClass) {
     PREMIUM: "Premium",
     TOP_TEAM: "Top Team",
     MASTER: "Master",
+    OFICIAL: "Oficial",
     ALMIGHTY: "Almighty",
   };
 

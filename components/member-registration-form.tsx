@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { BloodType, MemberClass, MemberLevel, MemberStatus, RoleType } from "@prisma/client";
+import { BloodType, MemberClass, MemberLevel, MemberStatus, OfficialSubclass, RoleType } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useRef, useState, useTransition } from "react";
@@ -13,7 +13,16 @@ const classOptions: { value: MemberClass; label: string }[] = [
   { value: "PREMIUM", label: "PREMIUM" },
   { value: "TOP_TEAM", label: "TOP TEAM" },
   { value: "MASTER", label: "MASTER" },
+  { value: "OFICIAL", label: "OFICIAL" },
   { value: "ALMIGHTY", label: "ALMIGHTY" },
+];
+
+const officialSubclassOptions: { value: OfficialSubclass; label: string }[] = [
+  { value: "AUXILIAR", label: "Auxiliar" },
+  { value: "RANGER", label: "Ranger" },
+  { value: "ARBITRO", label: "Árbitro" },
+  { value: "REPORTER", label: "Reporter" },
+  { value: "GERENTE", label: "Gerente" },
 ];
 
 const levelOptions: { value: MemberLevel; label: string }[] = [
@@ -78,6 +87,7 @@ export function MemberRegistrationForm({
   const [success, setSuccess] = useState("");
   const [selectedRole, setSelectedRole] = useState<RoleType>("operador");
   const [selectedClass, setSelectedClass] = useState<MemberClass>("STANDARD");
+  const [selectedOfficialSubclass, setSelectedOfficialSubclass] = useState<OfficialSubclass>("AUXILIAR");
   const [photoDataUrl, setPhotoDataUrl] = useState("");
   const [photoScale, setPhotoScale] = useState(100);
   const [photoPositionX, setPhotoPositionX] = useState(50);
@@ -203,6 +213,7 @@ export function MemberRegistrationForm({
       addressComplement: String(formData.get("addressComplement") ?? "").trim(),
       fieldId: String(formData.get("fieldId") ?? "").trim(),
       memberClass: String(formData.get("memberClass") ?? "STANDARD"),
+      officialSubclass: String(formData.get("officialSubclass") ?? "").trim(),
       accessLogin: String(formData.get("accessLogin") ?? "").trim(),
       accessPassword: String(formData.get("accessPassword") ?? "").trim(),
       adminAuthorizationLogin: String(formData.get("adminAuthorizationLogin") ?? "").trim(),
@@ -251,6 +262,7 @@ export function MemberRegistrationForm({
 
       formElement.reset();
       setSelectedClass("STANDARD");
+      setSelectedOfficialSubclass("AUXILIAR");
       setSelectedRole("operador");
       setPhotoDataUrl("");
       setPhotoScale(100);
@@ -605,8 +617,12 @@ export function MemberRegistrationForm({
               const nextValue = event.target.value as MemberClass;
               setSelectedClass(nextValue);
 
-              if (nextValue !== "MASTER" && nextValue !== "ALMIGHTY") {
+              if (nextValue !== "MASTER" && nextValue !== "OFICIAL" && nextValue !== "ALMIGHTY") {
                 setShowAuthorizationFields(false);
+              }
+
+              if (nextValue === "OFICIAL") {
+                setSelectedOfficialSubclass("AUXILIAR");
               }
             }}
           >
@@ -617,6 +633,23 @@ export function MemberRegistrationForm({
             ))}
           </select>
         </label>
+
+        {selectedClass === "OFICIAL" ? (
+          <label className="field">
+            <span>Sub classe</span>
+            <select
+              name="officialSubclass"
+              onChange={(event) => setSelectedOfficialSubclass(event.target.value as OfficialSubclass)}
+              value={selectedOfficialSubclass}
+            >
+              {officialSubclassOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
 
         <label className="field">
           <span>Nível</span>
@@ -651,7 +684,7 @@ export function MemberRegistrationForm({
           </label>
         ) : null}
 
-        {selectedClass === "MASTER" || selectedClass === "ALMIGHTY" ? (
+        {selectedClass === "MASTER" || selectedClass === "OFICIAL" || selectedClass === "ALMIGHTY" ? (
           <>
             <div className="form-section-title field-full">Acesso Privilegiado do Operador</div>
 
@@ -668,7 +701,9 @@ export function MemberRegistrationForm({
             <p className="field-helper field-full">
               {selectedClass === "MASTER"
                 ? "MASTER pode editar e alterar em nível administrativo."
-                : "ALMIGHTY possui acesso máximo e exigirá autorização crítica em alterações sensíveis."}
+                : selectedClass === "OFICIAL"
+                  ? "OFICIAL recebe acesso conforme a sub classe selecionada."
+                  : "ALMIGHTY possui acesso máximo e exigirá autorização crítica em alterações sensíveis."}
             </p>
 
           </>
@@ -717,7 +752,7 @@ export function MemberRegistrationForm({
           />
         </label>
 
-        {selectedClass === "MASTER" || selectedClass === "ALMIGHTY" ? (
+        {selectedClass === "MASTER" || selectedClass === "OFICIAL" || selectedClass === "ALMIGHTY" ? (
           <>
             <div className="authorization-request field-full">
               <span>Solicitação necessita de Autorização</span>

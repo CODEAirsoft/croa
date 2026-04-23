@@ -98,6 +98,7 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
     otherRole: member.otherRole ?? "",
     level: member.level,
     memberClass: member.memberClass,
+    officialSubclass: (member.officialSubclass ?? "") as "" | NonNullable<typeof member.officialSubclass>,
     status: member.status,
     fieldId: member.fieldId ?? "",
     squadName: member.squad?.name ?? "",
