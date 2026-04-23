@@ -7,7 +7,7 @@ import {
   createAdministrativeSessionToken,
   getAdministrativeCookieOptions,
 } from "@/lib/admin-session";
-import { verifyMasterCredentials } from "@/lib/critical-auth";
+import { verifySupremeCredentials } from "@/lib/critical-auth";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as {
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!verifyMasterCredentials({ login: body.codiname ?? "", password: body.password ?? "" })) {
+  if (!(await verifySupremeCredentials({ login: body.codiname ?? "", password: body.password ?? "" }))) {
     return NextResponse.json({ error: "Login ou senha master inválidos." }, { status: 401 });
   }
 

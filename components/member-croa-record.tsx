@@ -884,10 +884,9 @@ export function MemberCroaRecord({
           </label>
         ) : null}
 
-        {(!isPublicView || canViewPrivateDetails) &&
-        (currentMember.memberClass === "MASTER" || currentMember.memberClass === "ALMIGHTY") ? (
+        {!isPublicView || canViewPrivateDetails ? (
           <>
-            <div className="form-section-title field-full">Acesso Privilegiado do Operador</div>
+            <div className="form-section-title field-full">Acesso do Operador</div>
 
             {isEditing ? (
               <label className="field">

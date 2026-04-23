@@ -1,6 +1,6 @@
 import { MemberClass, RoleType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { verifyMasterCredentials } from "@/lib/critical-auth";
+import { verifySupremeCredentials } from "@/lib/critical-auth";
 import { verifyPassword } from "@/lib/password";
 
 export async function verifyAdministrativeMemberViewAccess({
@@ -10,7 +10,7 @@ export async function verifyAdministrativeMemberViewAccess({
   login: string;
   password: string;
 }) {
-  if (verifyMasterCredentials({ login, password })) {
+  if (await verifySupremeCredentials({ login, password })) {
     return true;
   }
 

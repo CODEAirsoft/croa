@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import {
+  CROA_GHOST_NUMBER,
   MASTER_REINTEGRATION_LOGIN,
   MASTER_REINTEGRATION_PASSWORD,
   MASTER_REINTEGRATION_PASSWORD_HASH,
@@ -35,6 +36,37 @@ export function verifyMasterCredentials({
   return verifyMasterSecret(password);
 }
 
+export async function verifySupremeCredentials({
+  login,
+  password,
+}: {
+  login: string;
+  password: string;
+}) {
+  const normalizedLogin = login.trim().toLowerCase();
+  const expectedLogin = MASTER_REINTEGRATION_LOGIN.trim().toLowerCase();
+
+  if (!normalizedLogin || normalizedLogin !== expectedLogin) {
+    return false;
+  }
+
+  const supremeMember = await prisma.member.findUnique({
+    where: {
+      croaNumber: CROA_GHOST_NUMBER,
+    },
+    select: {
+      accessPasswordHash: true,
+      status: true,
+    },
+  });
+
+  if (supremeMember?.accessPasswordHash && supremeMember.status !== "excluido") {
+    return verifyPassword(password, supremeMember.accessPasswordHash);
+  }
+
+  return verifyMasterSecret(password);
+}
+
 export async function verifyCriticalOperatorAccess({
   login,
   password,
@@ -42,7 +74,7 @@ export async function verifyCriticalOperatorAccess({
   login: string;
   password: string;
 }) {
-  if (verifyMasterCredentials({ login, password })) {
+  if (await verifySupremeCredentials({ login, password })) {
     return true;
   }
 
