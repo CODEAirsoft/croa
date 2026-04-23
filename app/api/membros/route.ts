@@ -1,5 +1,5 @@
 ﻿import { NextResponse } from "next/server";
-import { BloodType, MemberClass, MemberLevel, MemberStatus, RoleType } from "@prisma/client";
+import { BloodType, MemberClass, MemberLevel, MemberStatus, OfficialSubclass, RoleType } from "@prisma/client";
 import { verifyCriticalOperatorAccess } from "@/lib/critical-auth";
 import { formatDdd, formatDdi, formatPhoneInternational, isValidRg } from "@/lib/field-validation";
 import { hashPassword } from "@/lib/password";
@@ -21,7 +21,8 @@ const VALID_ROLE_TYPES = [
   "outros",
 ] as const;
 const VALID_MEMBER_LEVELS = ["ALPHA_0", "N1", "N2", "N3", "N4", "N5"] as const;
-const VALID_MEMBER_CLASSES = ["STANDARD", "PREMIUM", "TOP_TEAM", "MASTER", "ALMIGHTY"] as const;
+const VALID_MEMBER_CLASSES = ["STANDARD", "PREMIUM", "TOP_TEAM", "MASTER", "OFICIAL", "ALMIGHTY"] as const;
+const VALID_OFFICIAL_SUBCLASSES = ["AUXILIAR", "RANGER", "ARBITRO", "REPORTER", "GERENTE"] as const;
 const VALID_MEMBER_STATUSES = ["ativo", "suspenso", "inativo", "excluido", "rip"] as const;
 const VALID_BLOOD_TYPES = [
   "A_POSITIVO",
@@ -87,6 +88,7 @@ export async function POST(request: Request) {
       emergencyContactName?: string;
       emergencyContactPhone?: string;
       memberClass?: string;
+      officialSubclass?: string;
       role?: string;
       otherRole?: string;
       level?: string;
@@ -176,6 +178,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Classe inválida." }, { status: 400 });
     }
 
+    if (
+      body.memberClass === "OFICIAL" &&
+      !VALID_OFFICIAL_SUBCLASSES.includes(body.officialSubclass as OfficialSubclass)
+    ) {
+      return NextResponse.json({ error: "Sub classe oficial inválida." }, { status: 400 });
+    }
+
     if (body.status && !VALID_MEMBER_STATUSES.includes(body.status as MemberStatus)) {
       return NextResponse.json({ error: "Situação inválida." }, { status: 400 });
     }
@@ -191,12 +200,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const isPrivilegedClass = body.memberClass === "MASTER" || body.memberClass === "ALMIGHTY";
+    const isPrivilegedClass =
+      body.memberClass === "MASTER" || body.memberClass === "OFICIAL" || body.memberClass === "ALMIGHTY";
 
     if (isPrivilegedClass) {
       if (!body.accessLogin?.trim() || !body.accessPassword?.trim()) {
         return NextResponse.json(
-          { error: "MASTER e ALMIGHTY exigem login e senha próprios do operador." },
+          { error: "MASTER, OFICIAL e ALMIGHTY exigem login e senha próprios do operador." },
           { status: 400 },
         );
       }
@@ -258,6 +268,8 @@ export async function POST(request: Request) {
         otherRole: body.otherRole?.trim() || null,
         level: body.level as MemberLevel,
         memberClass: body.memberClass as MemberClass,
+        officialSubclass:
+          body.memberClass === "OFICIAL" ? (body.officialSubclass as OfficialSubclass) : null,
         fieldId: body.fieldId?.trim() || null,
         addressStreet: body.addressStreet?.trim() || null,
         addressNumber: body.addressNumber?.trim() || null,

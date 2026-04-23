@@ -28,7 +28,16 @@ enum MemberClass {
   PREMIUM
   TOP_TEAM
   MASTER
+  OFICIAL
   ALMIGHTY
+}
+
+enum OfficialSubclass {
+  AUXILIAR
+  RANGER
+  ARBITRO
+  REPORTER
+  GERENTE
 }
 
 enum BloodType {
@@ -106,6 +115,18 @@ enum SquadSpecialization {
   ENGENHEIRO
 }
 
+enum GameSheetStatus {
+  planejado
+  iniciado
+  finalizado
+  cancelado
+}
+
+enum GamePointTarget {
+  OPERATOR
+  SQUAD
+}
+
 model User {
   id           String   @id @default(cuid())
   fullName     String
@@ -173,6 +194,8 @@ model Squad {
   field            Field?                @relation(fields: [fieldId], references: [id])
   members          Member[]
   assignments      SquadMemberAssignment[]
+  gameSheets       GameSheetSquad[]
+  gameScores       GameScore[]
   createdAt        DateTime              @default(now())
   updatedAt        DateTime              @updatedAt
 }
@@ -202,6 +225,7 @@ model Member {
   otherRole             String?
   level                 MemberLevel        @default(ALPHA_0)
   memberClass           MemberClass        @default(STANDARD)
+  officialSubclass      OfficialSubclass?
   points                Int                @default(0)
   attendanceRate        Int                @default(0)
   cooldownDaysRemaining Int                @default(0)
@@ -228,6 +252,9 @@ model Member {
   secondRangerFields    Field[]            @relation("FieldSecondRanger")
   squadAssignments      SquadMemberAssignment[]
   attendances           AttendanceRecord[]
+  rangerGameSheets      GameSheetRanger[]
+  operatorGameScores    GameScore[]        @relation("OperatorGameScores")
+  createdGameScores     GameScore[]        @relation("CreatedGameScores")
   createdAt             DateTime           @default(now())
   updatedAt             DateTime           @updatedAt
 
@@ -281,8 +308,69 @@ model EventRecord {
   field                Field?             @relation(fields: [fieldId], references: [id])
   attendances          AttendanceRecord[]
   newsPosts            NewsPost[]
+  gameSheets           GameSheet[]
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
+}
+
+model GameSheet {
+  id                  String             @id @default(cuid())
+  title               String
+  eventId             String?
+  scheduledAt         DateTime?
+  gameDurationMinutes Int?
+  operationType       String?
+  missionType         String?
+  interventionType    String?
+  status              GameSheetStatus    @default(planejado)
+  event               EventRecord?       @relation(fields: [eventId], references: [id])
+  squads              GameSheetSquad[]
+  rangers             GameSheetRanger[]
+  scores              GameScore[]
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+}
+
+model GameSheetSquad {
+  id          String    @id @default(cuid())
+  gameSheetId String
+  squadId     String
+  sortOrder   Int       @default(0)
+  score       Int       @default(0)
+  gameSheet   GameSheet @relation(fields: [gameSheetId], references: [id], onDelete: Cascade)
+  squad       Squad     @relation(fields: [squadId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([gameSheetId, squadId])
+}
+
+model GameSheetRanger {
+  id          String    @id @default(cuid())
+  gameSheetId String
+  memberId    String
+  gameSheet   GameSheet @relation(fields: [gameSheetId], references: [id], onDelete: Cascade)
+  member      Member    @relation(fields: [memberId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([gameSheetId, memberId])
+}
+
+model GameScore {
+  id          String          @id @default(cuid())
+  gameSheetId String
+  targetType  GamePointTarget
+  memberId    String?
+  squadId     String?
+  points      Int
+  note        String?
+  createdById String?
+  gameSheet   GameSheet       @relation(fields: [gameSheetId], references: [id], onDelete: Cascade)
+  member      Member?         @relation("OperatorGameScores", fields: [memberId], references: [id])
+  squad       Squad?          @relation(fields: [squadId], references: [id])
+  createdBy   Member?         @relation("CreatedGameScores", fields: [createdById], references: [id])
+  createdAt   DateTime        @default(now())
 }
 
 model CourseRecord {

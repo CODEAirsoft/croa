@@ -143,6 +143,12 @@ export async function PATCH(request: Request, { params }: Params) {
       otherRole: body.otherRole ?? undefined,
       level: body.level ?? undefined,
       memberClass: body.memberClass ?? undefined,
+      officialSubclass:
+        body.memberClass === "OFICIAL"
+          ? body.officialSubclass ?? undefined
+          : body.memberClass
+            ? null
+            : body.officialSubclass ?? undefined,
       status: body.status ?? undefined,
       fieldId: body.fieldId ?? undefined,
       squadId: body.squadId ?? undefined,
