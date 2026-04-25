@@ -1,5 +1,6 @@
 ﻿import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { DownloadLinkButton } from "@/components/download-link-button";
@@ -16,6 +17,16 @@ import { formatFieldCode } from "@/lib/field-code";
 import { prisma } from "@/lib/prisma";
 const prismaNews = prisma as any;
 
+function getPublicBaseUrl() {
+  const configuredUrl = process.env.NEXT_PUBLIC_CROA_URL ?? process.env.APP_CROA_URL ?? "https://croa-beta.vercel.app";
+  return configuredUrl.replace(/\/$/, "");
+}
+
+function getNewsDescription(excerpt?: string | null, body?: string | null) {
+  const text = (excerpt || body || "Notícia oficial publicada na redação do CROA.").replace(/\s+/g, " ").trim();
+  return text.length > 180 ? `${text.slice(0, 177)}...` : text;
+}
+
 function getEmbedUrl(videoUrl?: string | null) {
   if (!videoUrl) return null;
   if (videoUrl.includes("youtube.com/watch?v=")) {
@@ -28,6 +39,67 @@ function getEmbedUrl(videoUrl?: string | null) {
 }
 
 type Props = { params: Promise<{ id: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const post = await prismaNews.newsPost.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      title: true,
+      excerpt: true,
+      body: true,
+      imageDataUrl: true,
+      published: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  if (!post || !post.published) {
+    return {
+      title: "Notícia não encontrada | CROA",
+      description: "Esta notícia não está disponível no CROA.",
+    };
+  }
+
+  const baseUrl = getPublicBaseUrl();
+  const title = `${post.title} | CROA`;
+  const description = getNewsDescription(post.excerpt, post.body);
+  const pageUrl = `${baseUrl}/noticias/${post.id}`;
+  const imageUrl = post.imageDataUrl ? `${baseUrl}/api/noticias/${post.id}/imagem` : `${baseUrl}/code-airsoft-logo.jpg`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      siteName: "CROA",
+      type: "article",
+      publishedTime: post.createdAt.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
+  };
+}
 
 export default async function NewsPostPage({ params }: Props) {
   const { id } = await params;
