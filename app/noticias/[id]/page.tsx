@@ -18,7 +18,7 @@ import { prisma } from "@/lib/prisma";
 const prismaNews = prisma as any;
 
 function getPublicBaseUrl() {
-  const configuredUrl = process.env.NEXT_PUBLIC_CROA_URL ?? process.env.APP_CROA_URL ?? "https://croa-beta.vercel.app";
+  const configuredUrl = process.env.NEXT_PUBLIC_CROA_URL ?? "https://croa-beta.vercel.app";
   return configuredUrl.replace(/\/$/, "");
 }
 
