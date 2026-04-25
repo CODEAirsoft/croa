@@ -11,6 +11,7 @@ const navigationItems = [
   { href: "/membros", label: "Membros" },
   { href: "/eventos", label: "Eventos" },
   { href: "/cursos", label: "Cursos" },
+  { href: "/arbitragem", label: "Arbitragem" },
 ];
 
 export async function AppShell({
@@ -26,8 +27,6 @@ export async function AppShell({
   const items = hasAdministrativeAccess
     ? [
         ...navigationItems,
-        { href: "/sumula", label: "Sumula" },
-        { href: "/ranger", label: "Ranger" },
         { href: "/cadastros", label: "Cadastros" },
         { href: "/redacao", label: "Redação" },
       ]

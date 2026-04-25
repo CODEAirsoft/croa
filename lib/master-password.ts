@@ -11,3 +11,4 @@ export const MASTER_REINTEGRATION_PASSWORD_HASH =
 export const ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET?.trim() ?? "";
 export const MASTER_SESSION_COOKIE = "croa_master_session";
 export const MEMBER_VIEW_SESSION_COOKIE = "croa_members_admin_view";
+export const ARBITRATION_SESSION_COOKIE = "croa_arbitragem_session";

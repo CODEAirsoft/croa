@@ -1,7 +1,7 @@
 import { GamePointTarget } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { hasAdministrativeSession } from "@/lib/admin-session";
+import { hasArbitrationSession } from "@/lib/admin-session";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -10,8 +10,8 @@ export const runtime = "nodejs";
 export async function POST(request: Request) {
   try {
     const cookieStore = await cookies();
-    if (!hasAdministrativeSession(cookieStore)) {
-      return NextResponse.json({ error: "Acesso administrativo necessario." }, { status: 403 });
+    if (!hasArbitrationSession(cookieStore)) {
+      return NextResponse.json({ error: "Acesso de arbitragem necessario." }, { status: 403 });
     }
 
     const body = (await request.json()) as {

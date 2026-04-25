@@ -60,7 +60,7 @@ export function RangerScorePanel({ sheets, members, squads }: RangerScorePanelPr
   return (
     <form className="ranger-console" onSubmit={handleSubmit}>
       <div className="ops-panel-heading">
-        <p>Painel Ranger</p>
+        <p>Controle Remoto</p>
         <h2>Pontuacao rapida</h2>
       </div>
 

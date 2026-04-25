@@ -3,21 +3,21 @@ import { cookies } from "next/headers";
 import { AppShell } from "@/components/app-shell";
 import { RangerScorePanel } from "@/components/ranger-score-panel";
 import { SectionCard } from "@/components/section-card";
-import { hasAdministrativeSession } from "@/lib/admin-session";
+import { hasArbitrationSession } from "@/lib/admin-session";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export default async function RangerPage() {
   const cookieStore = await cookies();
-  const hasAccess = hasAdministrativeSession(cookieStore);
+  const hasAccess = hasArbitrationSession(cookieStore);
 
   if (!hasAccess) {
     return (
-      <AppShell title="Ranger">
+      <AppShell title="Controle Remoto">
         <SectionCard eyebrow="Acesso restrito" title="Painel de pontuacao">
           <p className="muted-copy">
-            Entre pelo modo administrativo em <Link href="/manager">/manager</Link> para abrir o painel Ranger.
+            Entre pela area de <Link href="/arbitragem">/arbitragem</Link> para abrir o Controle Remoto.
           </p>
         </SectionCard>
       </AppShell>
@@ -70,9 +70,9 @@ export default async function RangerPage() {
   ]);
 
   return (
-    <AppShell title="Ranger">
+    <AppShell title="Controle Remoto">
       <div className="ops-device-warning desktop-only">
-        O painel Ranger foi desenhado para smartphone ou tablet. Para operar em PC, use a Sumula.
+        O Controle Remoto foi desenhado para smartphone ou tablet. Para operar em PC, use a Sumula.
       </div>
 
       <div className="ranger-mobile-frame">

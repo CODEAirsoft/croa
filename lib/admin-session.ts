@@ -1,13 +1,14 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import {
   ADMIN_SESSION_SECRET,
+  ARBITRATION_SESSION_COOKIE,
   MASTER_REINTEGRATION_PASSWORD,
   MASTER_REINTEGRATION_PASSWORD_HASH,
   MASTER_SESSION_COOKIE,
   MEMBER_VIEW_SESSION_COOKIE,
 } from "@/lib/master-password";
 
-type AdminSessionKind = "master" | "member-view";
+type AdminSessionKind = "master" | "member-view" | "arbitration";
 
 type CookieStoreLike = {
   get(name: string): { value?: string } | undefined;
@@ -129,11 +130,19 @@ export function getAdministrativeCookieOptions(maxAge: number) {
 export function clearAdministrativeSessions(cookieStore: MutableCookieStoreLike) {
   cookieStore.delete(MASTER_SESSION_COOKIE);
   cookieStore.delete(MEMBER_VIEW_SESSION_COOKIE);
+  cookieStore.delete(ARBITRATION_SESSION_COOKIE);
 }
 
 export function hasAdministrativeSession(cookieStore: CookieStoreLike) {
   return (
     verifyAdministrativeSessionToken(cookieStore.get(MASTER_SESSION_COOKIE)?.value, "master") ||
     verifyAdministrativeSessionToken(cookieStore.get(MEMBER_VIEW_SESSION_COOKIE)?.value, "member-view")
+  );
+}
+
+export function hasArbitrationSession(cookieStore: CookieStoreLike) {
+  return (
+    hasAdministrativeSession(cookieStore) ||
+    verifyAdministrativeSessionToken(cookieStore.get(ARBITRATION_SESSION_COOKIE)?.value, "arbitration")
   );
 }

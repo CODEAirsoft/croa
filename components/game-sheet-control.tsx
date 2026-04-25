@@ -101,6 +101,28 @@ export function GameSheetControl({ events, squads, rangers, sheets }: GameSheetC
     router.refresh();
   }
 
+  async function deleteSheet(id: string) {
+    const confirmed = window.confirm("Deseja excluir este jogo ou cancelar a operacao?");
+
+    if (!confirmed) {
+      return;
+    }
+
+    setMessage("");
+    const response = await fetch(`/api/sumulas/${id}`, {
+      method: "DELETE",
+    });
+
+    const result = (await response.json()) as { error?: string };
+    if (!response.ok) {
+      setMessage(result.error ?? "Nao foi possivel excluir o jogo.");
+      return;
+    }
+
+    setMessage("Jogo excluido com sucesso.");
+    router.refresh();
+  }
+
   function toggleSelection(current: string[], setter: (value: string[]) => void, id: string, limit: number) {
     if (current.includes(id)) {
       setter(current.filter((item) => item !== id));
@@ -248,6 +270,9 @@ export function GameSheetControl({ events, squads, rangers, sheets }: GameSheetC
                       </button>
                       <button className="button secondary" onClick={() => updateStatus(sheet.id, GameSheetStatus.finalizado)} type="button">
                         Finalizar
+                      </button>
+                      <button className="button secondary ops-danger-action" onClick={() => deleteSheet(sheet.id)} type="button">
+                        Excluir Jogo
                       </button>
                     </div>
                   </td>

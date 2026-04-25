@@ -4,7 +4,7 @@ import { OfficialSubclass } from "@prisma/client";
 import { AppShell } from "@/components/app-shell";
 import { GameSheetControl } from "@/components/game-sheet-control";
 import { SectionCard } from "@/components/section-card";
-import { hasAdministrativeSession } from "@/lib/admin-session";
+import { hasArbitrationSession } from "@/lib/admin-session";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -22,14 +22,14 @@ function formatDate(value: Date | null) {
 
 export default async function SumulaPage() {
   const cookieStore = await cookies();
-  const hasAccess = hasAdministrativeSession(cookieStore);
+  const hasAccess = hasArbitrationSession(cookieStore);
 
   if (!hasAccess) {
     return (
       <AppShell title="Sumula">
         <SectionCard eyebrow="Acesso restrito" title="Area do arbitro">
           <p className="muted-copy">
-            Entre pelo modo administrativo em <Link href="/manager">/manager</Link> para abrir a sumula dos jogos.
+            Entre pela area de <Link href="/arbitragem">/arbitragem</Link> para abrir a sumula dos jogos.
           </p>
         </SectionCard>
       </AppShell>
@@ -135,7 +135,7 @@ export default async function SumulaPage() {
   return (
     <AppShell title="Sumula">
       <div className="ops-device-warning phone-only">
-        A sumula do arbitro foi preparada para PC ou tablet. Em celular, use o painel Ranger.
+        A sumula do arbitro foi preparada para PC ou tablet. Em celular, use o Controle Remoto.
       </div>
 
       <GameSheetControl

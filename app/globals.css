@@ -3781,6 +3781,23 @@ body {
   font-size: 1rem;
 }
 
+.quick-access-card {
+  display: grid;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.ops-danger-action {
+  color: #ff7d7d;
+  border-color: rgba(255, 125, 125, 0.24);
+}
+
+.ops-danger-action:hover {
+  color: #ffd1d1;
+  border-color: rgba(255, 125, 125, 0.48);
+  background: rgba(120, 16, 16, 0.2);
+}
+
 @media (min-width: 1024px) {
   .croa-record-wallet-public .croa-record-photo {
     width: 168px;
