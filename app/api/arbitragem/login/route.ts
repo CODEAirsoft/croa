@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import {
-  clearAdministrativeSessions,
   createAdministrativeSessionToken,
   getAdministrativeCookieOptions,
 } from "@/lib/admin-session";
@@ -40,6 +39,6 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE() {
-  clearAdministrativeSessions(await cookies());
+  (await cookies()).delete(ARBITRATION_SESSION_COOKIE);
   return NextResponse.json({ ok: true });
 }

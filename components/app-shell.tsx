@@ -4,13 +4,16 @@ import { ReactNode } from "react";
 import { AppShellNavigationPortal } from "@/components/app-shell-navigation-portal";
 import { hasAdministrativeSession } from "@/lib/admin-session";
 
-const navigationItems = [
+const publicNavigationItems = [
   { href: "/", label: "Dashboard" },
   { href: "/campos", label: "Campos" },
   { href: "/squads", label: "Squads" },
   { href: "/membros", label: "Membros" },
   { href: "/eventos", label: "Eventos" },
   { href: "/cursos", label: "Cursos" },
+];
+
+const privateNavigationItems = [
   { href: "/arbitragem", label: "Arbitragem" },
 ];
 
@@ -26,11 +29,12 @@ export async function AppShell({
   const hasAdministrativeAccess = hasAdministrativeSession(cookieStore);
   const items = hasAdministrativeAccess
     ? [
-        ...navigationItems,
+        ...publicNavigationItems,
+        ...privateNavigationItems,
         { href: "/cadastros", label: "Cadastros" },
         { href: "/redacao", label: "Redação" },
       ]
-    : navigationItems;
+    : publicNavigationItems;
 
   return (
     <div className="app-frame">
@@ -57,7 +61,10 @@ export async function AppShell({
             <h1 className="topbar-title">{title}</h1>
           </div>
         </div>
-        <AppShellNavigationPortal hasAdministrativeAccess={hasAdministrativeAccess} items={items} />
+        <AppShellNavigationPortal
+          hasAdministrativeAccess={hasAdministrativeAccess}
+          items={items}
+        />
       </header>
       {children}
     </div>
