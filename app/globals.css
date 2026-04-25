@@ -2827,18 +2827,31 @@ body {
 .resenha-shell {
   width: 100%;
   min-height: 100vh;
-  padding: clamp(12px, 2vw, 22px);
+  padding: 0;
   display: grid;
   align-items: start;
-  background: transparent;
+  background: #000000;
 }
 
 .resenha-shell .news-menu-card {
   width: 100%;
   max-width: 100%;
   margin: 0;
-  background: transparent;
+  min-height: 100vh;
+  padding: clamp(16px, 2.6vw, 28px);
+  border: 0;
+  border-radius: 0;
+  background: #000000;
   box-shadow: none;
+  backdrop-filter: none;
+}
+
+.resenha-shell .news-menu-list {
+  gap: 12px;
+}
+
+.resenha-shell .news-menu-item {
+  border: 0;
 }
 
 .dashboard-ranking-list {
