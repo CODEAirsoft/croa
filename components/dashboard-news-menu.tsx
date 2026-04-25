@@ -42,7 +42,15 @@ function getSearchableDateParts(value: string) {
   }
 }
 
-export function DashboardNewsMenu({ items }: { items: NewsItem[] }) {
+export function DashboardNewsMenu({
+  items,
+  openInNewTab = false,
+  compact = false,
+}: {
+  items: NewsItem[];
+  openInNewTab?: boolean;
+  compact?: boolean;
+}) {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
 
@@ -64,7 +72,7 @@ export function DashboardNewsMenu({ items }: { items: NewsItem[] }) {
   }
 
   return (
-    <article className="card section-card news-menu-card">
+    <article className={`card section-card news-menu-card${compact ? " news-menu-card-compact" : ""}`}>
       <div className="card-header news-menu-header">
         <div>
           <span className="eyebrow">Menu de notícias</span>
@@ -86,7 +94,13 @@ export function DashboardNewsMenu({ items }: { items: NewsItem[] }) {
 
       <div className="news-menu-list">
         {paginatedItems.map((post) => (
-          <Link className="news-menu-item" href={`/noticias/${post.id}`} key={post.id}>
+          <Link
+            className="news-menu-item"
+            href={`/noticias/${post.id}`}
+            key={post.id}
+            rel={openInNewTab ? "noopener noreferrer" : undefined}
+            target={openInNewTab ? "_blank" : undefined}
+          >
             {post.imageDataUrl ? (
               <div className="news-menu-image">
                 <Image

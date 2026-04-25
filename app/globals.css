@@ -2668,6 +2668,11 @@ body {
   align-content: start;
 }
 
+.news-menu-card-compact {
+  height: auto;
+  min-height: 100%;
+}
+
 .news-menu-header {
   display: flex;
   justify-content: space-between;
@@ -2817,6 +2822,23 @@ body {
   min-height: 34px;
   padding: 7px 12px;
   font-size: 0.82rem;
+}
+
+.resenha-shell {
+  width: 100%;
+  min-height: 100vh;
+  padding: clamp(12px, 2vw, 22px);
+  display: grid;
+  align-items: start;
+  background:
+    linear-gradient(160deg, rgba(19, 19, 19, 0.94), rgba(11, 11, 11, 0.98)),
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.05), transparent 30%);
+}
+
+.resenha-shell .news-menu-card {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
 }
 
 .dashboard-ranking-list {
