@@ -2,6 +2,8 @@ import { DashboardNewsMenu } from "@/components/dashboard-news-menu";
 import { prisma } from "@/lib/prisma";
 
 const prismaNews = prisma as any;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata = {
   title: "Nossa Resenha | CROA",
