@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useRef, useState, useTransition } from "react";
-import { courseCategoryOptions } from "@/lib/offerings";
+import { courseCategoryOptions, recurrenceFrequencyOptions } from "@/lib/offerings";
 
 type FieldOption = {
   id: string;
@@ -25,6 +25,8 @@ type CourseInitialData = {
   startAt: string;
   endAt: string;
   registrationDeadline: string;
+  recurringEnabled: boolean;
+  recurrenceFrequency: string;
   totalSeats: number;
   reservedSlots: number;
   priceLabel: string;
@@ -73,6 +75,8 @@ export function CourseRegistrationForm({
   const [photoPositionX, setPhotoPositionX] = useState(initialData?.photoPositionX ?? 50);
   const [photoPositionY, setPhotoPositionY] = useState(initialData?.photoPositionY ?? 50);
   const [active, setActive] = useState(initialData?.active ?? true);
+  const [recurringEnabled, setRecurringEnabled] = useState(initialData?.recurringEnabled ?? false);
+  const [recurrenceFrequency, setRecurrenceFrequency] = useState(initialData?.recurrenceFrequency || "semanal");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isEditing = Boolean(initialData && endpoint);
 
@@ -110,6 +114,8 @@ export function CourseRegistrationForm({
       startAt: String(formData.get("startAt") ?? "").trim(),
       endAt: String(formData.get("endAt") ?? "").trim() || null,
       registrationDeadline: String(formData.get("registrationDeadline") ?? "").trim() || null,
+      recurringEnabled,
+      recurrenceFrequency: recurringEnabled ? recurrenceFrequency : null,
       totalSeats: Number(String(formData.get("totalSeats") ?? "0").replace(/[^\d]/g, "") || "0"),
       reservedSlots: Number(String(formData.get("reservedSlots") ?? "0").replace(/[^\d]/g, "") || "0"),
       priceLabel: String(formData.get("priceLabel") ?? "").trim(),
@@ -143,6 +149,8 @@ export function CourseRegistrationForm({
         setPhotoPositionX(50);
         setPhotoPositionY(50);
         setActive(true);
+        setRecurringEnabled(false);
+        setRecurrenceFrequency("semanal");
       }
 
       setSuccess(successMessage ?? (isEditing ? "Curso atualizado com sucesso." : "Curso cadastrado com sucesso."));
@@ -240,6 +248,36 @@ export function CourseRegistrationForm({
           <label className="field"><span>Início</span><input defaultValue={initialData?.startAt || ""} name="startAt" type="datetime-local" /></label>
           <label className="field"><span>Fim</span><input defaultValue={initialData?.endAt || ""} name="endAt" type="datetime-local" /></label>
           <label className="field"><span>Reserva até</span><input defaultValue={initialData?.registrationDeadline || ""} name="registrationDeadline" type="datetime-local" /></label>
+        </div>
+
+        <div className="field-row field-full field-social-row">
+          <label className="field">
+            <span>Periodicidade</span>
+            <button
+              aria-pressed={recurringEnabled}
+              className={`button secondary boolean-toggle-button${recurringEnabled ? " is-active" : ""}`}
+              type="button"
+              onClick={() => setRecurringEnabled((current) => !current)}
+            >
+              {recurringEnabled ? "Curso recorrente" : "Curso pontual"}
+            </button>
+          </label>
+          <label className="field">
+            <span>Recorrência</span>
+            <select disabled={!recurringEnabled} value={recurrenceFrequency} onChange={(event) => setRecurrenceFrequency(event.target.value)}>
+              {recurrenceFrequencyOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="field field-static">
+            <span>Agenda</span>
+            <div className="field-highlight">
+              <strong>{recurringEnabled ? "Curso recorrente" : "Curso com data fixa"}</strong>
+            </div>
+          </div>
         </div>
 
         <div className="field-row field-full field-social-row">

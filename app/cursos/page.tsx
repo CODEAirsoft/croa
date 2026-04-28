@@ -3,7 +3,7 @@ import { AppShell } from "@/components/app-shell";
 import { OfferingsDirectory } from "@/components/offerings-directory";
 import { hasAdministrativeSession } from "@/lib/admin-session";
 import { formatFieldCode } from "@/lib/field-code";
-import { buildReservationLink, formatDateLabel, formatDateTimeLabel } from "@/lib/offerings";
+import { buildReservationLink, formatDateLabel, formatDateTimeLabel, formatRecurrenceLabel, getNextRecurringDate } from "@/lib/offerings";
 import { prisma } from "@/lib/prisma";
 
 export default async function CoursesPage() {
@@ -28,6 +28,7 @@ export default async function CoursesPage() {
     const placeLabel = item.field
       ? `${formatFieldCode(item.field.codeNumber, item.field.state, item.field.countryCode)} | ${item.field.name}`
       : [item.city, item.state].filter(Boolean).join(" / ") || "Local a definir";
+    const nextOccurrence = item.recurringEnabled ? getNextRecurringDate(item.startAt, item.recurrenceFrequency) : null;
 
     return {
       id: item.id,
@@ -35,9 +36,11 @@ export default async function CoursesPage() {
       category: item.category || "Curso",
       summary: item.summary || item.description || "Sem resumo cadastrado.",
       placeLabel,
-      dateLabel: item.endAt
-        ? `${formatDateTimeLabel(item.startAt)} até ${formatDateTimeLabel(item.endAt)}`
-        : formatDateTimeLabel(item.startAt),
+      dateLabel: item.recurringEnabled
+        ? `Curso recorrente · ${formatRecurrenceLabel(item.recurrenceFrequency)} · Próxima: ${formatDateTimeLabel(nextOccurrence ?? item.startAt)}`
+        : item.endAt
+          ? `${formatDateTimeLabel(item.startAt)} até ${formatDateTimeLabel(item.endAt)}`
+          : formatDateTimeLabel(item.startAt),
       deadlineLabel: formatDateLabel(item.registrationDeadline),
       priceLabel: item.priceLabel || "Consulte a organização",
       seatsLabel: item.totalSeats > 0
@@ -46,7 +49,7 @@ export default async function CoursesPage() {
       reserveHref: buildReservationLink({
         kindLabel: "Curso",
         title: item.title,
-        startAt: item.startAt,
+        startAt: nextOccurrence ?? item.startAt,
         placeLabel,
         customMessage: item.whatsappMessage,
       }),

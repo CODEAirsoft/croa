@@ -1,9 +1,8 @@
 ﻿import Image from "next/image";
-import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
-import { DownloadLinkButton } from "@/components/download-link-button";
+import { ShareArticleButton } from "@/components/share-article-button";
 import {
   buildReservationLink,
   formatCurrencyValue,
@@ -175,15 +174,19 @@ export default async function NewsPostPage({ params }: Props) {
         placeLabel: latestCourse.field
           ? `${formatFieldCode(latestCourse.field.codeNumber, latestCourse.field.state, latestCourse.field.countryCode)} | ${latestCourse.field.name}`
           : [latestCourse.city, latestCourse.state].filter(Boolean).join(" / ") || "Local a definir",
-        dateLabel: latestCourse.endAt
-          ? `${formatDateTimeLabel(latestCourse.startAt)} até ${formatDateTimeLabel(latestCourse.endAt)}`
-          : formatDateTimeLabel(latestCourse.startAt),
+        dateLabel: latestCourse.recurringEnabled
+          ? `Curso recorrente · ${formatRecurrenceLabel(latestCourse.recurrenceFrequency)} · Próxima: ${formatDateTimeLabel(
+              getNextRecurringDate(latestCourse.startAt, latestCourse.recurrenceFrequency) ?? latestCourse.startAt,
+            )}`
+          : latestCourse.endAt
+            ? `${formatDateTimeLabel(latestCourse.startAt)} até ${formatDateTimeLabel(latestCourse.endAt)}`
+            : formatDateTimeLabel(latestCourse.startAt),
         priceLabel: latestCourse.priceLabel || "Consulte a organização",
         imageSrc: latestCourse.photoDataUrl || "/cadastro-campos.png",
         href: buildReservationLink({
           kindLabel: "Curso",
           title: latestCourse.title,
-          startAt: latestCourse.startAt,
+          startAt: getNextRecurringDate(latestCourse.startAt, latestCourse.recurrenceFrequency) ?? latestCourse.startAt,
           placeLabel:
             latestCourse.field
               ? `${formatFieldCode(latestCourse.field.codeNumber, latestCourse.field.state, latestCourse.field.countryCode)} | ${latestCourse.field.name}`
@@ -230,10 +233,7 @@ export default async function NewsPostPage({ params }: Props) {
             <div className="news-article-body">
               <pre>{post.body}</pre>
               <div className="news-article-body-actions">
-                <DownloadLinkButton filename={`croa-noticia-${post.id}.url`} label="Download" url={shareUrl} />
-                <Link className="button secondary" href="/">
-                  Retornar ao Dashboard
-                </Link>
+                <ShareArticleButton label="Copiar Link" text={post.excerpt} title={post.title} url={shareUrl} />
               </div>
             </div>
           ) : null}

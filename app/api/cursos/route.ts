@@ -51,6 +51,8 @@ export async function POST(request: Request) {
         startAt,
         endAt: parseDate(body.endAt),
         registrationDeadline: parseDate(body.registrationDeadline),
+        recurringEnabled: Boolean(body.recurringEnabled),
+        recurrenceFrequency: Boolean(body.recurringEnabled) ? String(body.recurrenceFrequency ?? "").trim() || "semanal" : null,
         totalSeats: Math.max(0, Number(body.totalSeats ?? 0) || 0),
         reservedSlots: Math.max(0, Number(body.reservedSlots ?? 0) || 0),
         priceLabel: String(body.priceLabel ?? "").trim() || null,

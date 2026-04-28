@@ -388,6 +388,8 @@ model CourseRecord {
   startAt              DateTime
   endAt                DateTime?
   registrationDeadline DateTime?
+  recurringEnabled     Boolean  @default(false)
+  recurrenceFrequency  String?
   totalSeats           Int      @default(0)
   reservedSlots        Int      @default(0)
   priceLabel           String?

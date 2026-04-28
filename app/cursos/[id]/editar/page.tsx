@@ -54,6 +54,8 @@ export default async function EditCoursePage({ params }: Props) {
               startAt: course.startAt.toISOString().slice(0, 16),
               endAt: course.endAt ? course.endAt.toISOString().slice(0, 16) : "",
               registrationDeadline: course.registrationDeadline ? course.registrationDeadline.toISOString().slice(0, 16) : "",
+              recurringEnabled: course.recurringEnabled,
+              recurrenceFrequency: course.recurrenceFrequency ?? "semanal",
               totalSeats: course.totalSeats,
               reservedSlots: course.reservedSlots,
               priceLabel: course.priceLabel ?? "",
@@ -75,4 +77,3 @@ export default async function EditCoursePage({ params }: Props) {
     </main>
   );
 }
-
