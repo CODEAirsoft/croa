@@ -112,6 +112,7 @@ type MemberCroaRecordData = {
   postalCode: string;
   addressComplement: string;
   bloodType: BloodType | "";
+  emergencyNotes: string[];
   emergencyContactName: string;
   emergencyContactPhone: string;
   observations: string;
@@ -149,6 +150,7 @@ function buildPayload(member: MemberCroaRecordData, nextPassword: string) {
     postalCode: member.postalCode.trim() || null,
     addressComplement: member.addressComplement.trim() || null,
     bloodType: member.bloodType || null,
+    emergencyNotes: member.emergencyNotes.map((item) => item.trim()).filter(Boolean),
     emergencyContactName: member.emergencyContactName.trim() || null,
     emergencyContactPhone: member.emergencyContactPhone.trim() || null,
     observations: member.observations.trim() || null,
@@ -186,10 +188,20 @@ export function MemberCroaRecord({
   const [success, setSuccess] = useState("");
   const [showHistory, setShowHistory] = useState(false);
   const [showEmergency, setShowEmergency] = useState(false);
+  const [showEmergencyContactAccess, setShowEmergencyContactAccess] = useState(false);
+  const [emergencyAccessLogin, setEmergencyAccessLogin] = useState("");
+  const [emergencyAccessPassword, setEmergencyAccessPassword] = useState("");
+  const [emergencyAccessError, setEmergencyAccessError] = useState("");
+  const [isEmergencyAccessPending, setIsEmergencyAccessPending] = useState(false);
+  const [revealedEmergencyContact, setRevealedEmergencyContact] = useState<{
+    emergencyContactName: string;
+    emergencyContactPhone: string;
+  } | null>(null);
 
   const currentMember = isEditing ? draftMember : savedMember;
   const isPublicView = !isEditing;
   const canViewPrivateDetails = canEdit;
+  const publicEmergencyNotes = currentMember.emergencyNotes.map((item) => item.trim()).filter(Boolean);
   const selectedStatusClass =
     statusOptions.find((item) => item.value === currentMember.status)?.badgeClass ?? "status-active";
   const selectedFieldLabel = fields.find((field) => field.id === currentMember.fieldId)?.label ?? "Não vinculado";
@@ -223,6 +235,27 @@ export function MemberCroaRecord({
     }));
   }
 
+  function updateEmergencyNote(index: number, value: string) {
+    setDraftMember((current) => ({
+      ...current,
+      emergencyNotes: current.emergencyNotes.map((item, itemIndex) => (itemIndex === index ? value : item)),
+    }));
+  }
+
+  function addEmergencyNote() {
+    setDraftMember((current) => ({
+      ...current,
+      emergencyNotes: [...current.emergencyNotes, ""],
+    }));
+  }
+
+  function removeEmergencyNote(index: number) {
+    setDraftMember((current) => ({
+      ...current,
+      emergencyNotes: current.emergencyNotes.filter((_, itemIndex) => itemIndex !== index),
+    }));
+  }
+
   function updateMemberClass(memberClass: MemberClass) {
     setDraftMember((current) => ({
       ...current,
@@ -236,6 +269,12 @@ export function MemberCroaRecord({
     setNextPassword("");
     setError("");
     setSuccess("");
+    setShowEmergency(false);
+    setShowEmergencyContactAccess(false);
+    setEmergencyAccessLogin("");
+    setEmergencyAccessPassword("");
+    setEmergencyAccessError("");
+    setRevealedEmergencyContact(null);
     setIsEditing(true);
   }
 
@@ -244,7 +283,67 @@ export function MemberCroaRecord({
     setNextPassword("");
     setError("");
     setSuccess("");
+    setShowEmergencyContactAccess(false);
+    setEmergencyAccessLogin("");
+    setEmergencyAccessPassword("");
+    setEmergencyAccessError("");
+    setRevealedEmergencyContact(null);
     setIsEditing(false);
+  }
+
+  function closeEmergencyAccessModal() {
+    setShowEmergencyContactAccess(false);
+    setEmergencyAccessLogin("");
+    setEmergencyAccessPassword("");
+    setEmergencyAccessError("");
+  }
+
+  async function handleEmergencyAccessSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!savedMember.id) {
+      setEmergencyAccessError("Não foi possível identificar este operador.");
+      return;
+    }
+
+    setEmergencyAccessError("");
+    setIsEmergencyAccessPending(true);
+
+    try {
+      const response = await fetch(`/api/membros/${savedMember.id}/emergency-contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          login: emergencyAccessLogin,
+          password: emergencyAccessPassword,
+        }),
+      });
+
+      const payload = (await response.json().catch(() => null)) as
+        | {
+            error?: string;
+            emergencyContactName?: string;
+            emergencyContactPhone?: string;
+          }
+        | null;
+
+      if (!response.ok) {
+        setEmergencyAccessError(payload?.error ?? "Não foi possível liberar o contato de emergência.");
+        return;
+      }
+
+      setRevealedEmergencyContact({
+        emergencyContactName: payload?.emergencyContactName?.trim() ?? "",
+        emergencyContactPhone: payload?.emergencyContactPhone?.trim() ?? "",
+      });
+      closeEmergencyAccessModal();
+    } catch {
+      setEmergencyAccessError("Não foi possível validar o acesso ao contato de emergência.");
+    } finally {
+      setIsEmergencyAccessPending(false);
+    }
   }
 
   async function handlePhotoChange(event: ChangeEvent<HTMLInputElement>) {
@@ -1017,6 +1116,40 @@ export function MemberCroaRecord({
                   />
                 </label>
 
+                <div className="field field-full">
+                  <span>Informações médicas públicas</span>
+                  <div className="croa-emergency-notes-list">
+                    {currentMember.emergencyNotes.length ? (
+                      currentMember.emergencyNotes.map((note, index) => (
+                        <div className="croa-emergency-note-row" key={`emergency-note-${index}`}>
+                          <textarea
+                            onChange={(event) => updateEmergencyNote(index, event.target.value)}
+                            placeholder="Alergia, diabetes, tratamento, restrição médica ou outra informação importante."
+                            readOnly={!isEditing}
+                            rows={3}
+                            value={note}
+                          />
+                          <button
+                            className="button secondary"
+                            onClick={() => removeEmergencyNote(index)}
+                            type="button"
+                          >
+                            Remover
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="field-inline-note">
+                        Nenhuma informação pública cadastrada. Use o botão abaixo para acrescentar quantas quiser.
+                      </p>
+                    )}
+
+                    <button className="button secondary" onClick={addEmergencyNote} type="button">
+                      + Mais
+                    </button>
+                  </div>
+                </div>
+
                 <label className="field field-full">
                   <span>Descrição / observações</span>
                   <textarea
@@ -1042,8 +1175,6 @@ export function MemberCroaRecord({
             ) : (
               <>
                 {renderReadOnlyField("Tipo de sangue", selectedBloodTypeLabel)}
-                {renderReadOnlyField("Contato de emergência", currentMember.emergencyContactName)}
-                {renderReadOnlyField("Número do contato de emergência", currentMember.emergencyContactPhone)}
               </>
             )}
           </>
@@ -1064,9 +1195,36 @@ export function MemberCroaRecord({
             <div className="croa-emergency-panel">
               <div className="quick-form-grid croa-record-grid croa-record-grid-public">
                 {renderReadOnlyField("Tipo de sangue", selectedBloodTypeLabel)}
-                {renderReadOnlyField("Contato de emergência", currentMember.emergencyContactName)}
-                {renderReadOnlyField("Número do contato de emergência", currentMember.emergencyContactPhone)}
               </div>
+
+              {publicEmergencyNotes.length ? (
+                <div className="croa-history-panel">
+                  <span>Informações médicas</span>
+                  <div className="croa-emergency-notes-list">
+                    {publicEmergencyNotes.map((note, index) => (
+                      <p key={`public-emergency-note-${index}`}>{note}</p>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              <button
+                className="button croa-emergency-contact-button"
+                onClick={() => setShowEmergencyContactAccess(true)}
+                type="button"
+              >
+                Contato de emergência
+              </button>
+
+              {revealedEmergencyContact ? (
+                <div className="quick-form-grid croa-record-grid croa-record-grid-public croa-protected-emergency-contact">
+                  {renderReadOnlyField("Contato de emergência", revealedEmergencyContact.emergencyContactName)}
+                  {renderReadOnlyField(
+                    "Número do contato de emergência",
+                    revealedEmergencyContact.emergencyContactPhone,
+                  )}
+                </div>
+              ) : null}
             </div>
           ) : null}
 
@@ -1106,6 +1264,51 @@ export function MemberCroaRecord({
           </>
         ) : null}
       </div>
+
+      {showEmergencyContactAccess ? (
+        <div className="critical-modal-backdrop" onClick={closeEmergencyAccessModal}>
+          <div className="sheet-panel critical-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="critical-modal-copy">
+              <strong>Contato de emergência protegido</strong>
+              <p>
+                Este conteúdo só pode ser liberado por eNobili, Almighty ou Oficial nas sub classes
+                Gerente e Árbitro.
+              </p>
+            </div>
+
+            <form className="quick-form-grid" onSubmit={handleEmergencyAccessSubmit}>
+              <label className="field field-full">
+                <span>Login</span>
+                <input
+                  autoFocus
+                  onChange={(event) => setEmergencyAccessLogin(event.target.value)}
+                  value={emergencyAccessLogin}
+                />
+              </label>
+
+              <label className="field field-full">
+                <span>Senha</span>
+                <input
+                  onChange={(event) => setEmergencyAccessPassword(event.target.value)}
+                  type="password"
+                  value={emergencyAccessPassword}
+                />
+              </label>
+
+              {emergencyAccessError ? <p className="form-message error-text">{emergencyAccessError}</p> : null}
+
+              <div className="critical-modal-actions">
+                <button className="button secondary" onClick={closeEmergencyAccessModal} type="button">
+                  Cancelar
+                </button>
+                <button className="button primary" disabled={isEmergencyAccessPending} type="submit">
+                  {isEmergencyAccessPending ? "Liberando..." : "Liberar contato"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </form>
   );
 }
