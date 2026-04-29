@@ -32,6 +32,33 @@ function getPublicBaseUrl() {
   return configuredUrl.replace(/\/$/, "");
 }
 
+function buildFieldLabel(field: {
+  codeNumber: number | null;
+  countryCode: string | null;
+  state: string | null;
+  name: string | null;
+}) {
+  const code = typeof field.codeNumber === "number" ? `${field.codeNumber}º` : "";
+  const countryCode = (field.countryCode ?? "").trim().toUpperCase();
+  const state = (field.state ?? "").trim().toUpperCase();
+  const name = (field.name ?? "").trim() || "Campo sem nome";
+  const region = `${countryCode}${state}`;
+
+  if (code && region) {
+    return `${code}${region} - ${name}`;
+  }
+
+  if (code) {
+    return `${code} - ${name}`;
+  }
+
+  if (region) {
+    return `${region} - ${name}`;
+  }
+
+  return name;
+}
+
 export async function generateMetadata({ params }: MemberCardPageProps): Promise<Metadata> {
   const { croa } = await params;
 
@@ -62,8 +89,9 @@ export async function generateMetadata({ params }: MemberCardPageProps): Promise
 
   const baseUrl = getPublicBaseUrl();
   const croaLabel = formatCroaCode(member.croaNumber);
-  const title = `${member.codiname} · ${croaLabel}`;
-  const description = `${member.codiname} | ${croaLabel}`;
+  const codiname = member.codiname?.trim() || "Operador CROA";
+  const title = `${codiname} · ${croaLabel}`;
+  const description = `${codiname} | ${croaLabel}`;
   const pageUrl = `${baseUrl}/croa/${croa}`;
   const imageUrl = member.photoDataUrl
     ? `${baseUrl}/api/croa/${croa}/imagem?t=${new Date(member.updatedAt).getTime()}`
@@ -86,7 +114,7 @@ export async function generateMetadata({ params }: MemberCardPageProps): Promise
           url: imageUrl,
           width: 1200,
           height: 1200,
-          alt: `${member.codiname} - ${croaLabel}`,
+          alt: `${codiname} - ${croaLabel}`,
         },
       ],
     },
@@ -157,14 +185,14 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
 
   const fieldOptions = fields.map((field) => ({
     id: field.id,
-    label: `${field.codeNumber}º${field.countryCode.trim().toUpperCase()}${field.state.trim().toUpperCase()} - ${field.name}`,
+    label: buildFieldLabel(field),
   }));
 
   const memberRecord = {
     id: member.id,
     croaNumber: member.croaNumber,
-    codiname: member.codiname,
-    fullName: member.fullName,
+    codiname: member.codiname ?? "",
+    fullName: member.fullName ?? "",
     birthDate: member.birthDate ? member.birthDate.toISOString().slice(0, 10) : "",
     enrollmentDate: member.enrollmentDate ? member.enrollmentDate.toISOString().slice(0, 10) : "",
     photoDataUrl: member.photoDataUrl ?? "",
@@ -179,12 +207,12 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
     ddd: member.ddd ?? "",
     phoneNumber: member.phoneNumber ?? "",
     rg: member.rg ?? "",
-    role: member.role,
+    role: member.role ?? "",
     otherRole: member.otherRole ?? "",
-    level: member.level,
-    memberClass: member.memberClass,
+    level: member.level ?? "",
+    memberClass: member.memberClass ?? "",
     officialSubclass: (member.officialSubclass ?? "") as "" | NonNullable<typeof member.officialSubclass>,
-    status: member.status,
+    status: member.status ?? "",
     fieldId: member.fieldId ?? "",
     squadName: member.squad?.name ?? "",
     squadFieldName: member.squad?.field?.name ?? "",
