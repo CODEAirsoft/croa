@@ -412,8 +412,6 @@ export function MemberCroaRecord({
               </div>
             ) : null}
           </div>
-
-          <strong className="croa-record-brand">CROA</strong>
         </div>
 
         <div className="croa-record-wallet-center">
