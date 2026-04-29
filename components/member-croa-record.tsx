@@ -72,12 +72,19 @@ const statusOptions: { value: MemberStatus; label: string; badgeClass: string }[
   { value: "rip", label: "R.I.P.", badgeClass: "status-rip" },
 ];
 
+const validMemberClasses = new Set<MemberClass>(classOptions.map((option) => option.value));
+const validOfficialSubclasses = new Set<OfficialSubclass>(officialSubclassOptions.map((option) => option.value));
+const validMemberLevels = new Set<MemberLevel>(levelOptions.map((option) => option.value));
+const validRoles = new Set<RoleType>(roleOptions.map((option) => option.value));
+const validBloodTypes = new Set<BloodType>(bloodTypeOptions.map((option) => option.value));
+const validStatuses = new Set<MemberStatus>(statusOptions.map((option) => option.value));
+
 type FieldOption = {
   id: string;
   label: string;
 };
 
-type MemberCroaRecordData = {
+export type MemberCroaRecordData = {
   id: string;
   croaNumber: number;
   codiname: string;
@@ -120,8 +127,23 @@ type MemberCroaRecordData = {
 };
 
 function normalizeMemberRecord(member: MemberCroaRecordData): MemberCroaRecordData {
+  const resolvedRole = validRoles.has(member.role) ? member.role : "operador";
+  const resolvedLevel = validMemberLevels.has(member.level) ? member.level : "ALPHA_0";
+  const resolvedMemberClass = validMemberClasses.has(member.memberClass) ? member.memberClass : "STANDARD";
+  const resolvedOfficialSubclass =
+    resolvedMemberClass === "OFICIAL" && member.officialSubclass && validOfficialSubclasses.has(member.officialSubclass)
+      ? member.officialSubclass
+      : resolvedMemberClass === "OFICIAL"
+        ? "AUXILIAR"
+        : "";
+  const resolvedStatus = validStatuses.has(member.status) ? member.status : "ativo";
+  const resolvedBloodType = member.bloodType && validBloodTypes.has(member.bloodType) ? member.bloodType : "";
+
   return {
     ...member,
+    role: resolvedRole,
+    level: resolvedLevel,
+    memberClass: resolvedMemberClass,
     photoDataUrl: member.photoDataUrl ?? "",
     crestLeftDataUrl: member.crestLeftDataUrl ?? "",
     crestRightDataUrl: member.crestRightDataUrl ?? "",
@@ -132,7 +154,7 @@ function normalizeMemberRecord(member: MemberCroaRecordData): MemberCroaRecordDa
     phoneNumber: member.phoneNumber ?? "",
     rg: member.rg ?? "",
     otherRole: member.otherRole ?? "",
-    officialSubclass: member.memberClass === "OFICIAL" ? member.officialSubclass || "AUXILIAR" : member.officialSubclass ?? "",
+    officialSubclass: resolvedOfficialSubclass,
     fieldId: member.fieldId ?? "",
     squadName: member.squadName ?? "",
     squadFieldName: member.squadFieldName ?? "",
@@ -142,12 +164,13 @@ function normalizeMemberRecord(member: MemberCroaRecordData): MemberCroaRecordDa
     neighborhood: member.neighborhood ?? "",
     postalCode: member.postalCode ?? "",
     addressComplement: member.addressComplement ?? "",
-    bloodType: member.bloodType ?? "",
+    bloodType: resolvedBloodType,
     emergencyNotes: Array.isArray(member.emergencyNotes) ? member.emergencyNotes.filter((item): item is string => typeof item === "string") : [],
     emergencyContactName: member.emergencyContactName ?? "",
     emergencyContactPhone: member.emergencyContactPhone ?? "",
     observations: member.observations ?? "",
     history: member.history ?? "",
+    status: resolvedStatus,
   };
 }
 

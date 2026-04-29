@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { BloodType } from "@prisma/client";
+import { BloodType, MemberClass, MemberLevel, MemberStatus, OfficialSubclass, RoleType } from "@prisma/client";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
-import { MemberCroaRecord } from "@/components/member-croa-record";
+import { MemberCroaRecord, type MemberCroaRecordData } from "@/components/member-croa-record";
 import { hasAdministrativeSession } from "@/lib/admin-session";
 import { formatCroaCode } from "@/lib/croa";
 import { prisma } from "@/lib/prisma";
@@ -26,6 +26,35 @@ function normalizeEmergencyNotes(value: unknown) {
     .map((item) => item.trim())
     .filter(Boolean);
 }
+
+const validRoles = new Set<RoleType>([
+  "operador",
+  "comando",
+  "ranger",
+  "arbitro",
+  "gestor",
+  "promoter",
+  "reporter",
+  "presidente",
+  "professor",
+  "instrutor",
+  "outros",
+]);
+
+const validMemberLevels = new Set<MemberLevel>(["ALPHA_0", "N1", "N2", "N3", "N4", "N5"]);
+const validMemberClasses = new Set<MemberClass>(["STANDARD", "PREMIUM", "TOP_TEAM", "MASTER", "OFICIAL", "ALMIGHTY"]);
+const validOfficialSubclasses = new Set<OfficialSubclass>(["AUXILIAR", "RANGER", "ARBITRO", "REPORTER", "GERENTE"]);
+const validStatuses = new Set<MemberStatus>(["ativo", "suspenso", "inativo", "excluido", "rip"]);
+const validBloodTypes = new Set<BloodType>([
+  "A_POSITIVO",
+  "A_NEGATIVO",
+  "B_POSITIVO",
+  "B_NEGATIVO",
+  "AB_POSITIVO",
+  "AB_NEGATIVO",
+  "O_POSITIVO",
+  "O_NEGATIVO",
+]);
 
 function getPublicBaseUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_CROA_URL ?? "https://croa-beta.vercel.app";
@@ -188,7 +217,21 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
     label: buildFieldLabel(field),
   }));
 
-  const memberRecord = {
+  const resolvedRole = member.role && validRoles.has(member.role) ? member.role : "operador";
+  const resolvedLevel = member.level && validMemberLevels.has(member.level) ? member.level : "ALPHA_0";
+  const resolvedMemberClass =
+    member.memberClass && validMemberClasses.has(member.memberClass) ? member.memberClass : "STANDARD";
+  const resolvedOfficialSubclass: OfficialSubclass | "" =
+    resolvedMemberClass === "OFICIAL" && member.officialSubclass && validOfficialSubclasses.has(member.officialSubclass)
+      ? member.officialSubclass
+      : resolvedMemberClass === "OFICIAL"
+        ? "AUXILIAR"
+        : "";
+  const resolvedStatus: MemberStatus = member.status && validStatuses.has(member.status) ? member.status : "ativo";
+  const resolvedBloodType: BloodType | "" =
+    member.bloodType && validBloodTypes.has(member.bloodType) ? member.bloodType : "";
+
+  const memberRecord: MemberCroaRecordData = {
     id: member.id,
     croaNumber: member.croaNumber,
     codiname: member.codiname ?? "",
@@ -207,12 +250,12 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
     ddd: member.ddd ?? "",
     phoneNumber: member.phoneNumber ?? "",
     rg: member.rg ?? "",
-    role: member.role ?? "",
+    role: resolvedRole,
     otherRole: member.otherRole ?? "",
-    level: member.level ?? "",
-    memberClass: member.memberClass ?? "",
-    officialSubclass: (member.officialSubclass ?? "") as "" | NonNullable<typeof member.officialSubclass>,
-    status: member.status ?? "",
+    level: resolvedLevel,
+    memberClass: resolvedMemberClass,
+    officialSubclass: resolvedOfficialSubclass,
+    status: resolvedStatus,
     fieldId: member.fieldId ?? "",
     squadName: member.squad?.name ?? "",
     squadFieldName: member.squad?.field?.name ?? "",
@@ -222,7 +265,7 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
     neighborhood: member.neighborhood ?? "",
     postalCode: member.postalCode ?? "",
     addressComplement: member.addressComplement ?? "",
-    bloodType: (member.bloodType ?? "") as BloodType | "",
+    bloodType: resolvedBloodType,
     emergencyNotes: normalizeEmergencyNotes((member as { emergencyNotes?: unknown }).emergencyNotes),
     emergencyContactName: member.emergencyContactName ?? "",
     emergencyContactPhone: member.emergencyContactPhone ?? "",
