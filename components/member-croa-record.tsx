@@ -119,42 +119,75 @@ type MemberCroaRecordData = {
   history: string;
 };
 
+function normalizeMemberRecord(member: MemberCroaRecordData): MemberCroaRecordData {
+  return {
+    ...member,
+    photoDataUrl: member.photoDataUrl ?? "",
+    crestLeftDataUrl: member.crestLeftDataUrl ?? "",
+    crestRightDataUrl: member.crestRightDataUrl ?? "",
+    accessLogin: member.accessLogin ?? "",
+    email: member.email ?? "",
+    ddi: member.ddi ?? "",
+    ddd: member.ddd ?? "",
+    phoneNumber: member.phoneNumber ?? "",
+    rg: member.rg ?? "",
+    otherRole: member.otherRole ?? "",
+    officialSubclass: member.memberClass === "OFICIAL" ? member.officialSubclass || "AUXILIAR" : member.officialSubclass ?? "",
+    fieldId: member.fieldId ?? "",
+    squadName: member.squadName ?? "",
+    squadFieldName: member.squadFieldName ?? "",
+    squadPhotoDataUrl: member.squadPhotoDataUrl ?? "",
+    addressStreet: member.addressStreet ?? "",
+    addressNumber: member.addressNumber ?? "",
+    neighborhood: member.neighborhood ?? "",
+    postalCode: member.postalCode ?? "",
+    addressComplement: member.addressComplement ?? "",
+    bloodType: member.bloodType ?? "",
+    emergencyNotes: Array.isArray(member.emergencyNotes) ? member.emergencyNotes.filter((item): item is string => typeof item === "string") : [],
+    emergencyContactName: member.emergencyContactName ?? "",
+    emergencyContactPhone: member.emergencyContactPhone ?? "",
+    observations: member.observations ?? "",
+    history: member.history ?? "",
+  };
+}
+
 function buildPayload(member: MemberCroaRecordData, nextPassword: string) {
+  const normalizedMember = normalizeMemberRecord(member);
   const payload: Record<string, unknown> = {
-    codiname: member.codiname.trim(),
-    fullName: member.fullName.trim(),
-    birthDate: member.birthDate || null,
-    enrollmentDate: member.enrollmentDate || null,
-    photoDataUrl: member.photoDataUrl || null,
-    photoScale: member.photoScale,
-    photoPositionX: member.photoPositionX,
-    photoPositionY: member.photoPositionY,
-    crestLeftDataUrl: member.crestLeftDataUrl || null,
-    crestRightDataUrl: member.crestRightDataUrl || null,
-    accessLogin: member.accessLogin.trim() || null,
-    email: member.email.trim() || null,
-    ddi: member.ddi.trim() || null,
-    ddd: member.ddd.trim() || null,
-    phoneNumber: member.phoneNumber.trim() || null,
-    rg: member.rg.trim() || null,
-    role: member.role,
-    otherRole: member.otherRole.trim() || null,
-    level: member.level,
-    memberClass: member.memberClass,
-    officialSubclass: member.memberClass === "OFICIAL" ? member.officialSubclass || "AUXILIAR" : null,
-    status: member.status,
-    fieldId: member.fieldId || null,
-    addressStreet: member.addressStreet.trim() || null,
-    addressNumber: member.addressNumber.trim() || null,
-    neighborhood: member.neighborhood.trim() || null,
-    postalCode: member.postalCode.trim() || null,
-    addressComplement: member.addressComplement.trim() || null,
-    bloodType: member.bloodType || null,
-    emergencyNotes: member.emergencyNotes.map((item) => item.trim()).filter(Boolean),
-    emergencyContactName: member.emergencyContactName.trim() || null,
-    emergencyContactPhone: member.emergencyContactPhone.trim() || null,
-    observations: member.observations.trim() || null,
-    history: member.history.trim() || null,
+    codiname: normalizedMember.codiname.trim(),
+    fullName: normalizedMember.fullName.trim(),
+    birthDate: normalizedMember.birthDate || null,
+    enrollmentDate: normalizedMember.enrollmentDate || null,
+    photoDataUrl: normalizedMember.photoDataUrl || null,
+    photoScale: normalizedMember.photoScale,
+    photoPositionX: normalizedMember.photoPositionX,
+    photoPositionY: normalizedMember.photoPositionY,
+    crestLeftDataUrl: normalizedMember.crestLeftDataUrl || null,
+    crestRightDataUrl: normalizedMember.crestRightDataUrl || null,
+    accessLogin: normalizedMember.accessLogin.trim() || null,
+    email: normalizedMember.email.trim() || null,
+    ddi: normalizedMember.ddi.trim() || null,
+    ddd: normalizedMember.ddd.trim() || null,
+    phoneNumber: normalizedMember.phoneNumber.trim() || null,
+    rg: normalizedMember.rg.trim() || null,
+    role: normalizedMember.role,
+    otherRole: normalizedMember.otherRole.trim() || null,
+    level: normalizedMember.level,
+    memberClass: normalizedMember.memberClass,
+    officialSubclass: normalizedMember.memberClass === "OFICIAL" ? normalizedMember.officialSubclass || "AUXILIAR" : null,
+    status: normalizedMember.status,
+    fieldId: normalizedMember.fieldId || null,
+    addressStreet: normalizedMember.addressStreet.trim() || null,
+    addressNumber: normalizedMember.addressNumber.trim() || null,
+    neighborhood: normalizedMember.neighborhood.trim() || null,
+    postalCode: normalizedMember.postalCode.trim() || null,
+    addressComplement: normalizedMember.addressComplement.trim() || null,
+    bloodType: normalizedMember.bloodType || null,
+    emergencyNotes: normalizedMember.emergencyNotes.map((item) => item.trim()).filter(Boolean),
+    emergencyContactName: normalizedMember.emergencyContactName.trim() || null,
+    emergencyContactPhone: normalizedMember.emergencyContactPhone.trim() || null,
+    observations: normalizedMember.observations.trim() || null,
+    history: normalizedMember.history.trim() || null,
   };
 
   if (nextPassword.trim()) {
@@ -181,8 +214,9 @@ export function MemberCroaRecord({
   const crestRightInputRef = useRef<HTMLInputElement>(null);
   const [isPending, startTransition] = useTransition();
   const [isEditing, setIsEditing] = useState(startEditing && canEdit);
-  const [savedMember, setSavedMember] = useState(member);
-  const [draftMember, setDraftMember] = useState(member);
+  const normalizedInitialMember = normalizeMemberRecord(member);
+  const [savedMember, setSavedMember] = useState(normalizedInitialMember);
+  const [draftMember, setDraftMember] = useState(normalizedInitialMember);
   const [nextPassword, setNextPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -201,7 +235,7 @@ export function MemberCroaRecord({
   const currentMember = isEditing ? draftMember : savedMember;
   const isPublicView = !isEditing;
   const canViewPrivateDetails = canEdit;
-  const publicEmergencyNotes = currentMember.emergencyNotes.map((item) => item.trim()).filter(Boolean);
+  const publicEmergencyNotes = (currentMember.emergencyNotes ?? []).map((item) => item.trim()).filter(Boolean);
   const selectedStatusClass =
     statusOptions.find((item) => item.value === currentMember.status)?.badgeClass ?? "status-active";
   const selectedFieldLabel = fields.find((field) => field.id === currentMember.fieldId)?.label ?? "Não vinculado";
@@ -265,7 +299,7 @@ export function MemberCroaRecord({
   }
 
   function handleStartEdit() {
-    setDraftMember(savedMember);
+    setDraftMember(normalizeMemberRecord(savedMember));
     setNextPassword("");
     setError("");
     setSuccess("");
@@ -279,7 +313,7 @@ export function MemberCroaRecord({
   }
 
   function handleCancelEdit() {
-    setDraftMember(savedMember);
+    setDraftMember(normalizeMemberRecord(savedMember));
     setNextPassword("");
     setError("");
     setSuccess("");
@@ -445,7 +479,9 @@ export function MemberCroaRecord({
         return;
       }
 
-      setSavedMember(draftMember);
+      const normalizedDraftMember = normalizeMemberRecord(draftMember);
+      setSavedMember(normalizedDraftMember);
+      setDraftMember(normalizedDraftMember);
       setNextPassword("");
       setIsEditing(false);
       setSuccess("Registro do membro atualizado com sucesso.");
