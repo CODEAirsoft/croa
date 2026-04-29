@@ -35,6 +35,17 @@ const VALID_BLOOD_TYPES = [
   "O_NEGATIVO",
 ] as const;
 
+function normalizeEmergencyNotes(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export async function GET() {
   const items = await prisma.member.findMany({
     include: {
@@ -85,6 +96,7 @@ export async function POST(request: Request) {
       postalCode?: string;
       addressComplement?: string;
       bloodType?: string;
+      emergencyNotes?: unknown;
       emergencyContactName?: string;
       emergencyContactPhone?: string;
       memberClass?: string;
@@ -200,6 +212,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const emergencyNotes = normalizeEmergencyNotes(body.emergencyNotes);
+
     const isPrivilegedClass =
       body.memberClass === "MASTER" || body.memberClass === "OFICIAL" || body.memberClass === "ALMIGHTY";
 
@@ -277,6 +291,7 @@ export async function POST(request: Request) {
         postalCode: body.postalCode?.trim() || null,
         addressComplement: body.addressComplement?.trim() || null,
         bloodType: (body.bloodType as BloodType | undefined) || null,
+        emergencyNotes: emergencyNotes.length ? emergencyNotes : [],
         emergencyContactName: body.emergencyContactName?.trim() || null,
         emergencyContactPhone: body.emergencyContactPhone?.trim() || null,
         observations: body.observations?.trim() || null,

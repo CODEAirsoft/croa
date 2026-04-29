@@ -15,6 +15,17 @@ type Params = {
 
 const VALID_OFFICIAL_SUBCLASSES = ["AUXILIAR", "RANGER", "ARBITRO", "REPORTER", "GERENTE"] as const;
 
+function normalizeEmergencyNotes(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export async function PATCH(request: Request, { params }: Params) {
   try {
     const cookieStore = await cookies();
@@ -61,6 +72,7 @@ export async function PATCH(request: Request, { params }: Params) {
         : body.officialSubclass === null
           ? null
           : undefined;
+    const emergencyNotes = normalizeEmergencyNotes(body.emergencyNotes);
 
     if (nextRg !== undefined && nextRg !== null && !isValidRg(nextRg)) {
       return NextResponse.json({ error: "RG inválido. Informe um RG em formato válido." }, { status: 400 });
@@ -183,6 +195,8 @@ export async function PATCH(request: Request, { params }: Params) {
       postalCode: body.postalCode ?? undefined,
       addressComplement: body.addressComplement ?? undefined,
       bloodType: body.bloodType ?? undefined,
+      emergencyNotes:
+        Array.isArray(body.emergencyNotes) ? (emergencyNotes.length ? emergencyNotes : []) : undefined,
       emergencyContactName: body.emergencyContactName ?? undefined,
       emergencyContactPhone: body.emergencyContactPhone ?? undefined,
       observations: body.observations ?? undefined,

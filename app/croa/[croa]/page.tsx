@@ -16,6 +16,17 @@ type MemberCardPageProps = {
   }>;
 };
 
+function normalizeEmergencyNotes(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function getPublicBaseUrl() {
   const configuredUrl = process.env.NEXT_PUBLIC_CROA_URL ?? "https://croa-beta.vercel.app";
   return configuredUrl.replace(/\/$/, "");
@@ -184,6 +195,7 @@ export default async function CroaCardPage({ params, searchParams }: MemberCardP
     postalCode: member.postalCode ?? "",
     addressComplement: member.addressComplement ?? "",
     bloodType: (member.bloodType ?? "") as BloodType | "",
+    emergencyNotes: normalizeEmergencyNotes((member as { emergencyNotes?: unknown }).emergencyNotes),
     emergencyContactName: member.emergencyContactName ?? "",
     emergencyContactPhone: member.emergencyContactPhone ?? "",
     observations: member.observations ?? "",

@@ -236,6 +236,7 @@ model Member {
   postalCode            String?
   addressComplement     String?
   bloodType             BloodType?
+  emergencyNotes        String[]               @default([])
   emergencyContactName  String?
   emergencyContactPhone String?
   observations          String?            @db.VarChar(500)

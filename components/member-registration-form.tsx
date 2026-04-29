@@ -100,9 +100,28 @@ export function MemberRegistrationForm({
   const [ddd, setDdd] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [rg, setRg] = useState("");
+  const [emergencyNotes, setEmergencyNotes] = useState<string[]>([""]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const crestLeftInputRef = useRef<HTMLInputElement>(null);
   const crestRightInputRef = useRef<HTMLInputElement>(null);
+
+  function updateEmergencyNote(index: number, value: string) {
+    setEmergencyNotes((current) => current.map((item, itemIndex) => (itemIndex === index ? value : item)));
+  }
+
+  function addEmergencyNote() {
+    setEmergencyNotes((current) => [...current, ""]);
+  }
+
+  function removeEmergencyNote(index: number) {
+    setEmergencyNotes((current) => {
+      if (current.length === 1) {
+        return [""];
+      }
+
+      return current.filter((_, itemIndex) => itemIndex !== index);
+    });
+  }
 
   async function handlePhotoChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -224,6 +243,7 @@ export function MemberRegistrationForm({
       bloodType: String(formData.get("bloodType") ?? "").trim(),
       emergencyContactName: String(formData.get("emergencyContactName") ?? "").trim(),
       emergencyContactPhone: String(formData.get("emergencyContactPhone") ?? "").trim(),
+      emergencyNotes: emergencyNotes.map((item) => item.trim()).filter(Boolean),
       observations: String(formData.get("observations") ?? "").trim(),
       history: String(formData.get("history") ?? "").trim(),
       photoDataUrl,
@@ -276,6 +296,7 @@ export function MemberRegistrationForm({
       setDdd("");
       setPhoneNumber("");
       setRg("");
+      setEmergencyNotes([""]);
       setSuccess("Membro cadastrado com sucesso.");
       router.refresh();
     });
@@ -732,6 +753,37 @@ export function MemberRegistrationForm({
           <span>Número do contato de emergência</span>
           <input name="emergencyContactPhone" placeholder="Ex.: +55 (31) 99999-0000" />
         </label>
+
+        <div className="field field-full">
+          <span>Informações públicas de emergência</span>
+          <div className="croa-repeatable-stack">
+            {emergencyNotes.map((note, index) => (
+              <div className="croa-repeatable-row" key={`emergency-note-${index}`}>
+                <input
+                  onChange={(event) => updateEmergencyNote(index, event.target.value)}
+                  placeholder="Ex.: Alergia a dipirona, diabetes, tratamento em andamento..."
+                  type="text"
+                  value={note}
+                />
+                <button
+                  className="button secondary"
+                  onClick={() => removeEmergencyNote(index)}
+                  type="button"
+                >
+                  Remover
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className="croa-repeatable-actions">
+            <button className="button secondary" onClick={addEmergencyNote} type="button">
+              + Mais
+            </button>
+          </div>
+          <p className="field-helper">
+            Esses textos ficam visíveis ao clicar em Emergência na carteirinha, mesmo sem login.
+          </p>
+        </div>
 
         <label className="field field-full">
           <span>Descrição / observações</span>

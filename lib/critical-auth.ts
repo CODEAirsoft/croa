@@ -1,3 +1,5 @@
+import { OfficialSubclass } from "@prisma/client";
+
 import { prisma } from "@/lib/prisma";
 import {
   CROA_GHOST_NUMBER,
@@ -93,4 +95,46 @@ export async function verifyCriticalOperatorAccess({
   }
 
   return owner.accessLogin === login && verifyPassword(password, owner.accessPasswordHash);
+}
+
+export async function verifyEmergencyContactAccess({
+  login,
+  password,
+}: {
+  login: string;
+  password: string;
+}) {
+  if (await verifySupremeCredentials({ login, password })) {
+    return true;
+  }
+
+  const member = await prisma.member.findFirst({
+    where: {
+      accessLogin: login,
+      status: { not: "excluido" },
+    },
+    select: {
+      accessPasswordHash: true,
+      memberClass: true,
+      officialSubclass: true,
+    },
+  });
+
+  if (!member?.accessPasswordHash) {
+    return false;
+  }
+
+  if (!verifyPassword(password, member.accessPasswordHash)) {
+    return false;
+  }
+
+  if (member.memberClass === "ALMIGHTY") {
+    return true;
+  }
+
+  return (
+    member.memberClass === "OFICIAL" &&
+    (member.officialSubclass === OfficialSubclass.GERENTE ||
+      member.officialSubclass === OfficialSubclass.ARBITRO)
+  );
 }
