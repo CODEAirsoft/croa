@@ -1,8 +1,10 @@
-﻿import { BloodType } from "@prisma/client";
+import type { Metadata } from "next";
+import { BloodType } from "@prisma/client";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { MemberCroaRecord } from "@/components/member-croa-record";
 import { hasAdministrativeSession } from "@/lib/admin-session";
+import { formatCroaCode } from "@/lib/croa";
 import { prisma } from "@/lib/prisma";
 
 type MemberCardPageProps = {
@@ -13,6 +15,78 @@ type MemberCardPageProps = {
     editar?: string;
   }>;
 };
+
+function getPublicBaseUrl() {
+  const configuredUrl = process.env.NEXT_PUBLIC_CROA_URL ?? "https://croa-beta.vercel.app";
+  return configuredUrl.replace(/\/$/, "");
+}
+
+export async function generateMetadata({ params }: MemberCardPageProps): Promise<Metadata> {
+  const { croa } = await params;
+
+  if (!/^\d{6}$/.test(croa)) {
+    return {
+      title: "Carteirinha não encontrada | CROA",
+      description: "Esta carteirinha não está disponível no CROA.",
+    };
+  }
+
+  const croaNumber = Number.parseInt(croa, 10);
+  const member = await prisma.member.findFirst({
+    where: { croaNumber },
+    select: {
+      codiname: true,
+      croaNumber: true,
+      photoDataUrl: true,
+      updatedAt: true,
+    },
+  });
+
+  if (!member) {
+    return {
+      title: "Carteirinha não encontrada | CROA",
+      description: "Esta carteirinha não está disponível no CROA.",
+    };
+  }
+
+  const baseUrl = getPublicBaseUrl();
+  const croaLabel = formatCroaCode(member.croaNumber);
+  const title = `${member.codiname} · ${croaLabel}`;
+  const description = `${member.codiname} | ${croaLabel}`;
+  const pageUrl = `${baseUrl}/croa/${croa}`;
+  const imageUrl = member.photoDataUrl
+    ? `${baseUrl}/api/croa/${croa}/imagem?t=${new Date(member.updatedAt).getTime()}`
+    : `${baseUrl}/code-airsoft-logo.jpg`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      siteName: "CROA",
+      type: "profile",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 1200,
+          alt: `${member.codiname} - ${croaLabel}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [imageUrl],
+    },
+  };
+}
 
 export default async function CroaCardPage({ params, searchParams }: MemberCardPageProps) {
   const { croa } = await params;
