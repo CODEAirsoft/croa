@@ -3737,7 +3737,7 @@ body {
 .croa-record-squad-photo {
   position: absolute;
   right: -34px;
-  top: 50%;
+  bottom: 8px;
   width: 50%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
@@ -3745,7 +3745,7 @@ body {
   border: 2px solid rgba(232, 211, 139, 0.42);
   background: rgba(12, 18, 16, 0.92);
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
-  transform: translateY(-50%);
+  transform: none;
   z-index: 2;
 }
 
@@ -4106,7 +4106,7 @@ body {
 
   .croa-record-wallet-public .croa-record-squad-photo {
     right: -36px;
-    top: 50%;
+    bottom: 10px;
     width: 50%;
   }
 }
